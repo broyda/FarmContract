@@ -1,0 +1,21 @@
+1) NodeJs and NPM. Just need to install NodeJs as NPM comes with it automaticcaly.
+2) Git tool.
+3) Meta mask chrome extension.
+4) Remix online IDE - http://remix.ethereum.org(Can be used for quickly writing and testing smart contracts)
+
+Following NPM modules needs to be installed.
+
+-> ganache-cli(Test network) 
+    npm install --save ganache-cli
+-> solc(Solidity compiler) 
+    npm install --save solc
+-> mocha (JS testing framework)
+    npm install --save mocha
+-> web3(Java script API for interacting with ethereum network) -> Run following command as administractor
+    npm install --global --production windows-build-tools
+   And install following module, 
+    npm install --save web3@1.0.0-beta.26
+-> webpack  
+    npm install --save webpack
+-> Install Truffle provider to set up web3 to connect to different ethereum networks, 
+    npm install --save truffle-hdwallet-provider
