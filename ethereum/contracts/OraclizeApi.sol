@@ -272,7 +272,4 @@ contract usingOraclize {
         }
         return string(bstr);
     }
-
-
-
 }

@@ -1,4 +1,9 @@
-const {interface, bytecode} = require('./compile');
+
+const contracts = require('./compile');
+const farmFactoryContract =contracts[':FarmFactoryContract'];
+const farmContract =contracts[':FarmContract'];
+const {interface, bytecode} = farmFactoryContract;
+
 const Web3 = require('web3');
 const HDWalletProvider = require('truffle-hdwallet-provider');
 
@@ -16,7 +21,9 @@ const deploy = async () =>{
   .deploy({data: bytecode, arguments:[]})
   .send({from: accounts[0], gas:1000000});
 
+  console.log(interface);
   console.log('Contract deployed to -> ', farmContractObj.options.address);
+
 };
 
 deploy();

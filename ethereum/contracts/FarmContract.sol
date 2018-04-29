@@ -68,5 +68,16 @@ contract FarmContract{
         require(insurer == 0);
         _;
     }
+}
 
+
+contract FarmFactoryContract{
+    mapping(address => address) public contractAddresses;
+
+    function createFarmContract(string _latitude, string _longitude,
+    uint _coverageAmount,  uint _listedPrice) public returns (address) {
+        address farmContractAddress = new FarmContract(_latitude, _longitude, _coverageAmount, _listedPrice);
+        contractAddresses[msg.sender] = farmContractAddress;
+        return farmContractAddress;
+    }
 }
