@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import factoryContractObj from '../ethereum/factory';
 import Layout from '../LayoutComponent';
-import {Form, Input, Container, Grid, Button} from 'semantic-ui-react';
+import {Form, Input, Container, Grid, Button, Label} from 'semantic-ui-react';
 
 class FarmContractIndex extends Component{
   constructor(props){
@@ -26,6 +26,23 @@ class FarmContractIndex extends Component{
     event.preventDefault();
     console.log('creating contract!!!!');
   }
+
+  loadGeoMap(){
+    console.log('inside load geoMap');
+    var mapOptions = {
+               center: new google.maps.LatLng(41.8781, -87.6298),
+               zoom: 10,
+               mapTypeId: google.maps.MapTypeId.ROADMAP
+           };
+           var infoWindow = new google.maps.InfoWindow();
+           var latlngbounds = new google.maps.LatLngBounds();
+           var map = new google.maps.Map(document.getElementById("geoMap"), mapOptions);
+  }
+
+  selectCordinates = (event) =>{
+    event.preventDefault();
+    console.log(event.target.type);
+  }
   render(){
     return(
       <Layout>
@@ -34,43 +51,28 @@ class FarmContractIndex extends Component{
               <Form onSubmit={this.createContract}>
                 <Grid>
                   <Grid.Row>
-                    <Grid.Column width={3}>
-                      <label>Longitude</label>
-                    </Grid.Column>
-
-                    <Grid.Column width={7}>
-                      <Form.Field>
-                        <Input
-                          value={this.state.longitude}
-                          placeholder='Enter longitude here'
-                          onChange={(event) => this.setState({longitude: event.target.value})}
-                          />
-                      </Form.Field>
+                    <Grid.Column>
+                      <Label pointing='below'>Choose Cordinates of your FARM:</Label>
                     </Grid.Column>
                   </Grid.Row>
-
                   <Grid.Row>
-                    <Grid.Column width={3}>
-                      <label>Lattitude</label>
+                    <Grid.Column width={1}>
                     </Grid.Column>
-
-                    <Grid.Column width={7}>
-                      <Form.Field>
-                        <Input
-                          value={this.state.lattitude}
-                          placeholder='Enter Lattitude here'
-                          onChange={(event) => this.setState({lattitude: event.target.value})}
-                          />
-                      </Form.Field>
-                  </Grid.Column>
+                    <Grid.Column width={9}>
+                      <div
+                        id="geoMap"
+                        style={{width: '650px', height: '250px'}}
+                        onClick={(event) => this.selectCordinates(event)}
+                        />
+                    </Grid.Column>
                   </Grid.Row>
-
+                  {this.loadGeoMap()}
                   <Grid.Row>
-                    <Grid.Column width={3}>
-                      <label>Coverage Amount</label>
+                    <Grid.Column width={4}>
+                      <Label pointing='right'>Coverage Amount</Label>
                     </Grid.Column>
 
-                    <Grid.Column width={7}>
+                    <Grid.Column width={6}>
                       <Form.Field>
                         <Input
                           value={this.state.coverageAmount}
@@ -84,11 +86,11 @@ class FarmContractIndex extends Component{
                   </Grid.Row>
 
                   <Grid.Row>
-                    <Grid.Column width={3}>
-                      <label>Listing Price</label>
+                    <Grid.Column width={4}>
+                      <Label pointing='right'>Listing Price</Label>
                     </Grid.Column>
 
-                    <Grid.Column width={7}>
+                    <Grid.Column width={6}>
                       <Form.Field>
                         <Input
                           value={this.state.listedPrice}
@@ -106,7 +108,6 @@ class FarmContractIndex extends Component{
                       <Button loading={this.state.loading} primary>Create Contract</Button>
                     </Grid.Column>
                   </Grid.Row>
-
                 </Grid>
               </Form>
           </div>

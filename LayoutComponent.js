@@ -11,8 +11,11 @@ class Layout extends Component{
             rel="stylesheet"
             href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css">
             </link>
+            <script type="text/javascript"
+                src="http://maps.googleapis.com/maps/api/js?sensor=false">
+            </script>
           </Head>
-          <div style={{marginTop:'10px'}}>
+          <div style={{marginTop:'20px'}}>
               <h3><center>Welcome to Farm Contract!!!</center></h3>
               <hr/>
                   {this.props.children}
