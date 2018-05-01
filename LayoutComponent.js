@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Container} from 'semantic-ui-react';
+import {Container, Menu} from 'semantic-ui-react';
 import Head from 'next/head';
 
 class Layout extends Component{
@@ -15,11 +15,27 @@ class Layout extends Component{
                 src="http://maps.googleapis.com/maps/api/js?sensor=false">
             </script>
           </Head>
-          <div style={{marginTop:'20px'}}>
-              <h3><center>Welcome to Farm Contract!!!</center></h3>
-              <hr/>
+          <div style={{marginTop:'15px'}}>
+              <Menu color='blue'>
+                  <Menu.Item name='home' active={true}>
+                      Home
+                  </Menu.Item>
+                  <Menu.Item name='create'>
+                      Create Contract
+                  </Menu.Item>
+
+                  <Menu.Item name='view'>
+                      View Contract
+                  </Menu.Item>
+
+                  <Menu.Menu position='right'>
+                      <Menu.Item name='contactus' active={true}>
+                          Contact Us
+                      </Menu.Item>
+                  </Menu.Menu>
+              </Menu>
+
                   {this.props.children}
-              <hr />
           </div>
         </Container>
       );

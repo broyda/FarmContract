@@ -66,7 +66,9 @@ class FarmContractIndex extends Component{
                         />
                     </Grid.Column>
                   </Grid.Row>
-                  {this.loadGeoMap()}
+
+                    {this.loadGeoMap()}
+
                   <Grid.Row>
                     <Grid.Column width={4}>
                       <Label pointing='right'>Coverage Amount</Label>
