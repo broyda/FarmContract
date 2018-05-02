@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Container, Menu} from 'semantic-ui-react';
 import Head from 'next/head';
+import Header from './Header';
 
 class Layout extends Component{
     render(){
@@ -16,26 +17,8 @@ class Layout extends Component{
             </script>
           </Head>
           <div style={{marginTop:'15px'}}>
-              <Menu color='blue'>
-                  <Menu.Item name='home' active={true}>
-                      Home
-                  </Menu.Item>
-                  <Menu.Item name='create'>
-                      Create Contract
-                  </Menu.Item>
-
-                  <Menu.Item name='view'>
-                      View Contract
-                  </Menu.Item>
-
-                  <Menu.Menu position='right'>
-                      <Menu.Item name='contactus' active={true}>
-                          Contact Us
-                      </Menu.Item>
-                  </Menu.Menu>
-              </Menu>
-
-                  {this.props.children}
+              <Header/>
+              {this.props.children}
           </div>
         </Container>
       );
