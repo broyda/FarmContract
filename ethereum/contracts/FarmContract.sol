@@ -282,6 +282,7 @@ contract FarmContract is usingOraclize{
     string longitude; // The latitude (say, the mean approx. latitude)
     uint  coverageAmount; // Coverage required for this contract.
     uint  listedPrice; // Amount ready to pay by creator/owner for contract to be covered
+    string description; // Contract description
     address public insurer; // Insurer for this contract
     bool public contractSigned; //Bool ind to know whether contract is insured by insurer.
     bool public claimProcessed;
@@ -294,12 +295,13 @@ contract FarmContract is usingOraclize{
     string  result;
 
     function FarmContract(string _latitude, string _longitude,
-    uint _coverageAmount,  uint _listedPrice) public {
+    uint _coverageAmount,  uint _listedPrice, string _description) public {
         owner = msg.sender;
         latitude = _latitude;
         longitude = _longitude;
         coverageAmount = _coverageAmount;
         listedPrice = _listedPrice;
+        description = _description;
     }
 
     //To be invoked by insurers with bidding amount for the contract
@@ -354,6 +356,11 @@ contract FarmContract is usingOraclize{
         owner = newOwner;
     }
 
+    function getFarmContractDetails() view public returns(address, string, string,
+    uint, uint, string, uint){
+        return(owner, latitude, longitude, coverageAmount, listedPrice, description, numberOfBidders);
+    }
+
     modifier biddingRules(uint bidPrice){
         require(bidPrice > 0);
         require(insurer == 0);
@@ -372,12 +379,14 @@ contract FarmContract is usingOraclize{
 }
 
 contract FarmFactoryContract{
-    mapping(address => address) public contractAddresses;
+  address[] public contractAddresseArray;
+  mapping(address => address) public contractAddressMap;
 
-    function createFarmContract(string _latitude, string _longitude,
-    uint _coverageAmount,  uint _listedPrice) public returns(address) {
-        address farmContractAddress = new FarmContract(_latitude, _longitude, _coverageAmount, _listedPrice);
-        contractAddresses[msg.sender] = farmContractAddress;
-        return farmContractAddress;
+  function createFarmContract(string _latitude, string _longitude,
+    uint _coverageAmount,  uint _listedPrice, string _description) public {
+        address farmContractAddress = new FarmContract(_latitude, _longitude,
+        _coverageAmount, _listedPrice, _description);
+        contractAddresseArray.push(farmContractAddress);
+        contractAddressMap[msg.sender] = farmContractAddress;
     }
 }

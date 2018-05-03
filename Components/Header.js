@@ -4,15 +4,15 @@ import {Link} from '../routes';
 
 export default () =>{
   return(
-    <Menu color='blue'>
+    <Menu color='teal'>
         <Link route='/'>
           <a className='item'> Home </a>
         </Link>
-        <Link route='/CreateContract'>
+        <Link route='/create'>
           <a className='item'> Create Contract </a>
         </Link>
 
-        <Link route='/CreateContract'>
+        <Link route='/view'>
           <a className='item'> View Contract </a>
         </Link>
 
