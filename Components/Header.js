@@ -17,9 +17,12 @@ export default () =>{
         </Link>
 
         <Menu.Menu position='right'>
-        <Link route='/'>
-          <a className='item'> Contact US </a>
-        </Link>
+          <Link route='/create'>
+            <a className='item'> + </a>
+          </Link>
+          <Link route='/'>
+            <a className='item'> Contact US </a>
+          </Link>
         </Menu.Menu>
     </Menu>
   );
