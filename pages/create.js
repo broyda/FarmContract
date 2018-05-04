@@ -17,27 +17,19 @@ class CreateContract extends Component{
   }
 
  createContract = async (event) =>{
-   this.setState({
-     loading: true,
-      errorMessage:''
-    });
-
+   this.setState({loading: true, errorMessage:''});
    event.preventDefault();
    try{
      const {longitude, lattitude, coverageAmount,listedPrice, description} = this.state;
      const accounts = await web3.eth.getAccounts();
-
      await factory.methods.createFarmContract(lattitude,longitude, coverageAmount,
-      listedPrice, description).send({from: accounts[0]});
+     listedPrice, description).send({from: accounts[0]});
 
      const addr = await factory.methods.contractAddressMap(accounts[0]).call();
      this.setState({address: addr, loading: false});
    }catch(error){
      console.log(error);
-     this.setState({
-       loading: false,
-       errorMessage:error.message
-     });
+     this.setState({ loading: false, errorMessage:error.message});
    }
   }
 
