@@ -79,7 +79,7 @@ class ViewContract extends Component{
         <Grid>
           <Grid.Row>
             <Grid.Column  width={8}>
-              <Divider horizontal inverted>FARM CONTRACT DEATILS PAGE!!</Divider>
+              <Divider horizontal>FARM CONTRACT DEATILS PAGE!!</Divider>
             </Grid.Column>
             <Grid.Column width={8} textAlign='right'>
               <Input
