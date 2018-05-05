@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Layout from '../Components/LayoutComponent';
 import farmFactory from '../ethereum/farmFactory';
 import web3 from '../ethereum/web3';
-import {Grid, Card, Label, Header, Divider, Button, Input} from 'semantic-ui-react';
+import {Grid, Card, Label, Header, Divider, Button, Input, Table} from 'semantic-ui-react';
 import DisplayContractDetails from '../Components/DisplayContractDetails';
 
 class ViewContract extends Component{
@@ -109,27 +109,47 @@ retreiveAndUpdateContractDetails = async () => {
                 />
               <Button primary content='search'
                 loading={this.state.loading}
-                onClick={this.searchContractDetails}/>
+                onClick={this.searchContractDetails} floated='right'/>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
-            <Grid.Column width={10}>
+            <Grid.Column width={9}>
               {this.renderContractDetails()}
             </Grid.Column>
 
             {this.state.address &&
-              <Grid.Column width={6} floated='right'>
+              <Grid.Column width={7} floated='right'>
                 <Input
                   value={this.state.bidAmount}
                   onChange={(event) => this.setState({bidAmount: event.target.value})}
                   placeholder='Bidding amount!'label='either' labelPosition='right'/>
-                    <br/><br/>
                 <Button
                   primary
                   loading={this.state.bidLoadingSpinner}
                   onClick={this.bidOnContract}
-                  >Bid On This Contract!
-                </Button>
+                  floated='right'>Bid this Contract</Button>
+
+                <Table columns={3} textAlign='center' size='small'striped compact celled selectable>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell>Address Of Bidder</Table.HeaderCell>
+                      <Table.HeaderCell>Amount Bidded</Table.HeaderCell>
+                      <Table.HeaderCell>Accept?</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body >
+                    <Table.Row>
+                      <Table.Cell>0x93a11b102245c7097cd4c998d71e76fd8b0a7893</Table.Cell>
+                      <Table.Cell>120</Table.Cell>
+                      <Table.Cell><Button size='small' primary>Choose</Button></Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                      <Table.Cell>0x93a11b102245c7097cd4c998d71e76fd8b0a7895</Table.Cell>
+                      <Table.Cell>180</Table.Cell>
+                      <Table.Cell><Button size='small' primary>Choose</Button></Table.Cell>
+                    </Table.Row>
+                  </Table.Body>
+                </Table>
               </Grid.Column> }
           </Grid.Row>
         </Grid>

@@ -287,6 +287,11 @@ contract FarmContract is usingOraclize{
     bool public contractSigned; //Bool ind to know whether contract is insured by insurer.
     bool public claimProcessed;
 
+    struct BidderInfo{
+        address bidder;
+        uint amount;
+    }
+    BidderInfo[] public bidderInfoArray;
     mapping(address => uint) public listOfBidders;//List of bidder with bidding price
     uint public numberOfBidders; //Total number of bidders on this contract
 
@@ -309,7 +314,9 @@ contract FarmContract is usingOraclize{
         if(listOfBidders[msg.sender] == 0){
              numberOfBidders++;
         }
-        listOfBidders[msg.sender] = amount;
+       listOfBidders[msg.sender] = amount;
+       BidderInfo memory bidderInfo = BidderInfo({bidder: msg.sender, amount:amount});
+       bidderInfoArray.push(bidderInfo);
     }
 
     //to be invoked by owner to select list of contracts
