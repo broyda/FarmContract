@@ -287,11 +287,8 @@ contract FarmContract is usingOraclize{
     bool public contractSigned; //Bool ind to know whether contract is insured by insurer.
     bool public claimProcessed;
 
-    struct BidderInfo{
-        address bidder;
-        uint amount;
-    }
-    BidderInfo[] public bidderInfoArray;
+    //Bidder informantion
+    address[] public biddersAddressArray;
     mapping(address => uint) public listOfBidders;//List of bidder with bidding price
     uint public numberOfBidders; //Total number of bidders on this contract
 
@@ -313,10 +310,13 @@ contract FarmContract is usingOraclize{
     function bid(uint amount) biddingRules(amount) checkInsurer public {
         if(listOfBidders[msg.sender] == 0){
              numberOfBidders++;
+             biddersAddressArray.push(msg.sender);
         }
        listOfBidders[msg.sender] = amount;
-       BidderInfo memory bidderInfo = BidderInfo({bidder: msg.sender, amount:amount});
-       bidderInfoArray.push(bidderInfo);
+    }
+
+    function getBiddersAddress() public view returns(address[]){
+        return biddersAddressArray;
     }
 
     //to be invoked by owner to select list of contracts

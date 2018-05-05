@@ -20,12 +20,12 @@ class DisplayContractDetails extends Component{
         {
           header: coverageAmount,
           meta:'Coverage Amount',
-          description: 'Contract Coverage amount',
+          description: 'Contract Coverage amount in wei',
           style: {overflowWrap: 'break-word'}
         },
         {
           header: listedPrice,
-          meta:'Listed price',
+          meta:'Listed price in wei',
           description: 'Price ready to be Paid by Contract Owner',
           style: {overflowWrap: 'break-word'}
         },
@@ -42,7 +42,7 @@ class DisplayContractDetails extends Component{
           style: {overflowWrap: 'break-word'}
         }
   ]
-    return(<Card.Group items={items}/>);
+    return(<Card.Group items={items} />);
   }
 }
 

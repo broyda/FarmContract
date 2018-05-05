@@ -114,7 +114,7 @@ class CreateContract extends Component{
                     <Form.Field>
                       <Input
                         value={this.state.coverageAmount}
-                        label='ether'
+                        label='wei'
                         labelPosition='right'
                         placeholder='Enter Coverage Amount here'
                         onChange={(event) => this.setState({coverageAmount: event.target.value})}
@@ -130,7 +130,7 @@ class CreateContract extends Component{
                     <Form.Field>
                       <Input
                         value={this.state.listedPrice}
-                        label='ether'
+                        label='wei'
                         labelPosition='right'
                         placeholder='Amount Ready to pay for Contract'
                         onChange={(event) => this.setState({listedPrice: event.target.value})}
@@ -146,7 +146,7 @@ class CreateContract extends Component{
                     <Form.Field>
                       <Input
                         value={this.state.description}
-                        label='ether'
+                        label='wei'
                         labelPosition='right'
                         placeholder='Description of the contract'
                         onChange={(event) => this.setState({description: event.target.value})}

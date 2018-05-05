@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import Layout from '../Components/LayoutComponent';
 import farmFactory from '../ethereum/farmFactory';
 import web3 from '../ethereum/web3';
-import {Grid, Card, Label, Header, Divider, Button, Input, Table} from 'semantic-ui-react';
+import {Grid, Card, Label, Header, Divider, Button, Input, Table, Message} from 'semantic-ui-react';
 import DisplayContractDetails from '../Components/DisplayContractDetails';
+import BiddingDetails from '../Components/BiddingDetails';
 
 class ViewContract extends Component{
   constructor(props){
@@ -14,13 +15,14 @@ class ViewContract extends Component{
       searchAddress:'',
       bidAmount:'',
       loading: false,
-      bidLoadingSpinner: false
+      bidLoadingSpinner: false,
+      contractNotFoundMessage:this.props.contractNotFoundMessage
     }
 }
   static async getInitialProps(props){
     const address = props.query.address;
     if(!address){
-      return{};
+      return{contractNotFoundMessage: 'No Contract Details found. Please search using Contract Address'};
     }else{
       const accounts = await web3.eth.getAccounts();
       const farmFactoryObj = farmFactory(address);
@@ -41,16 +43,12 @@ class ViewContract extends Component{
     event.preventDefault();
     if(this.state.searchAddress){
       this.setState({loading: true});
-      try{
-          this.retreiveAndUpdateContractDetails();
-      }catch(error){
-        console.log(error);
-      }
-      this.setState({loading: false});
+      this.retreiveAndUpdateContractDetails();
     }
   };
 
 retreiveAndUpdateContractDetails = async () => {
+  try{
     const accounts = await web3.eth.getAccounts();
     const searchFarmObj = await farmFactory(this.state.searchAddress);
     const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
@@ -67,7 +65,12 @@ retreiveAndUpdateContractDetails = async () => {
     loading: false,
     contractDetails: details
   });
-  };
+}catch(error){
+  console.log(error);
+  this.setState({contractNotFoundMessage: 'No details found!. Please reverify search criteria.'});
+}
+this.setState({loading: false});
+};
 
   bidOnContract = async () => {
     const bidAmount = this.state.bidAmount;
@@ -89,7 +92,17 @@ retreiveAndUpdateContractDetails = async () => {
     if(this.state.address){
       return <DisplayContractDetails contractDetails={this.state.contractDetails}/>
     }else{
-      return <center><Label color='red'>No Contract details Found!!!!!</Label></center>;
+      return(
+      <Message negative>
+        <Message.Header>
+          Contract Details
+        </Message.Header>
+      <p>
+          {this.state.contractNotFoundMessage}
+      </p>
+      </Message>
+      );
+
     }
   }
 
@@ -118,38 +131,13 @@ retreiveAndUpdateContractDetails = async () => {
             </Grid.Column>
 
             {this.state.address &&
-              <Grid.Column width={7} floated='right'>
-                <Input
-                  value={this.state.bidAmount}
-                  onChange={(event) => this.setState({bidAmount: event.target.value})}
-                  placeholder='Bidding amount!'label='either' labelPosition='right'/>
-                <Button
-                  primary
-                  loading={this.state.bidLoadingSpinner}
-                  onClick={this.bidOnContract}
-                  floated='right'>Bid this Contract</Button>
-
-                <Table columns={3} textAlign='center' size='small'striped compact celled selectable>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>Address Of Bidder</Table.HeaderCell>
-                      <Table.HeaderCell>Amount Bidded</Table.HeaderCell>
-                      <Table.HeaderCell>Accept?</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body >
-                    <Table.Row>
-                      <Table.Cell>0x93a11b102245c7097cd4c998d71e76fd8b0a7893</Table.Cell>
-                      <Table.Cell>120</Table.Cell>
-                      <Table.Cell><Button size='small' primary>Choose</Button></Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>0x93a11b102245c7097cd4c998d71e76fd8b0a7895</Table.Cell>
-                      <Table.Cell>180</Table.Cell>
-                      <Table.Cell><Button size='small' primary>Choose</Button></Table.Cell>
-                    </Table.Row>
-                  </Table.Body>
-                </Table>
+              <Grid.Column width={7} floated='right' container='true'>
+                  <BiddingDetails
+                    bidAmount={this.state.bidAmount}
+                    bidLoadingSpinner={this.state.bidLoadingSpinner}
+                    bidOnContract={this.bidOnContract}
+                    updateBiddingAmount={(event) => this.setState({bidAmount: event.target.value})}
+                  />
               </Grid.Column> }
           </Grid.Row>
         </Grid>
