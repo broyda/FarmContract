@@ -12,7 +12,9 @@ class ViewContract extends Component{
       address: this.props.address,
       contractDetails: this.props.details,
       searchAddress:'',
-      loading: false
+      bidAmount:'',
+      loading: false,
+      bidLoadingSpinner: false
     }
 }
   static async getInitialProps(props){
@@ -35,35 +37,53 @@ class ViewContract extends Component{
     }
   }
 
-  retreiveContractDetails = async (event) => {
+  searchContractDetails = async (event) => {
     event.preventDefault();
     if(this.state.searchAddress){
       this.setState({loading: true});
-      console.log(this.state.searchAddress);
       try{
-          const accounts = await web3.eth.getAccounts();
-          const searchFarmObj = await farmFactory(this.state.searchAddress);
-          const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
-          console.log(farmDetails);
-          const details ={
-              owner: farmDetails[0],
-              coordinates: `Lattitide - ${farmDetails[1]} & Langitude - ${farmDetails[2]}`,
-              coverageAmount: farmDetails[3],
-              listedPrice: farmDetails[4],
-              description: farmDetails[5],
-              bidders: farmDetails[6]
-            };
-        this.setState({
-          address: this.state.searchAddress,
-          loading: false,
-          contractDetails: details
-        });
+          this.retreiveAndUpdateContractDetails();
       }catch(error){
         console.log(error);
       }
       this.setState({loading: false});
     }
   };
+
+retreiveAndUpdateContractDetails = async () => {
+    const accounts = await web3.eth.getAccounts();
+    const searchFarmObj = await farmFactory(this.state.searchAddress);
+    const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
+    const details ={
+        owner: farmDetails[0],
+        coordinates: `Lattitide - ${farmDetails[1]} & Langitude - ${farmDetails[2]}`,
+        coverageAmount: farmDetails[3],
+        listedPrice: farmDetails[4],
+        description: farmDetails[5],
+        bidders: farmDetails[6]
+      };
+  this.setState({
+    address: this.state.searchAddress,
+    loading: false,
+    contractDetails: details
+  });
+  };
+
+  bidOnContract = async () => {
+    const bidAmount = this.state.bidAmount;
+    if(bidAmount !== '' && bidAmount > 0 ){
+      this.setState({bidLoadingSpinner: true});
+      try{
+        const accounts = await web3.eth.getAccounts();
+        const contractObj = farmFactory(this.state.address);
+        await contractObj.methods.bid(this.state.bidAmount).send({from: accounts[0]});
+        this.retreiveAndUpdateContractDetails();
+      }catch(error){
+        console.log(error);
+      }
+        this.setState({bidLoadingSpinner: false});
+    }
+  }
 
   renderContractDetails(){
     if(this.state.address){
@@ -76,12 +96,12 @@ class ViewContract extends Component{
   render(){
     return(
       <Layout>
-        <Grid>
+        <Grid color='teal'>
           <Grid.Row>
-            <Grid.Column  width={8}>
+            <Grid.Column  width={9}>
               <Divider horizontal>FARM CONTRACT DEATILS PAGE!!</Divider>
             </Grid.Column>
-            <Grid.Column width={8} textAlign='right'>
+            <Grid.Column width={7} textAlign='right'>
               <Input
                 value={this.state.searchAddress}
                 onChange={(event) => {this.setState({searchAddress: event.target.value})}}
@@ -89,7 +109,7 @@ class ViewContract extends Component{
                 />
               <Button primary content='search'
                 loading={this.state.loading}
-                onClick={this.retreiveContractDetails}/>
+                onClick={this.searchContractDetails}/>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
@@ -98,10 +118,18 @@ class ViewContract extends Component{
             </Grid.Column>
 
             {this.state.address &&
-              <Grid.Column width={6}>
-                <Input placeholder='Bidding amount!'label='either' labelPosition='right'/>
+              <Grid.Column width={6} floated='right'>
+                <Input
+                  value={this.state.bidAmount}
+                  onChange={(event) => this.setState({bidAmount: event.target.value})}
+                  placeholder='Bidding amount!'label='either' labelPosition='right'/>
                     <br/><br/>
-                <Button primary >Bid on this Contract!</Button>
+                <Button
+                  primary
+                  loading={this.state.bidLoadingSpinner}
+                  onClick={this.bidOnContract}
+                  >Bid On This Contract!
+                </Button>
               </Grid.Column> }
           </Grid.Row>
         </Grid>
