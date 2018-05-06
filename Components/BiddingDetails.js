@@ -1,7 +1,19 @@
 import React, {Component} from 'react';
 import {Table, Input, Button} from 'semantic-ui-react';
+import BiddingRow from './BiddingRow';
 
 class BiddingDetails extends Component{
+  renderBidderInformation(){
+      if(typeof this.props.biddersInfo !== 'undefined'
+        && this.props.biddersInfo !== ''
+        && this.props.biddersInfo !== null){
+      return this.props.biddersInfo.map((data, index) => {
+        return <BiddingRow bidderAddress={data.bidderAddress}
+          amount={data.amount}  key={index} bidderChoosen={data.bidderChoosen}/>;
+      })
+    }
+  };
+
   render(){
     return(
       <div>
@@ -24,17 +36,8 @@ class BiddingDetails extends Component{
               <Table.HeaderCell>Accept?</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
-          <Table.Body >
-            <Table.Row>
-              <Table.Cell>0x93a11b102245c7097cd4c998d71e76fd8b0a7893</Table.Cell>
-              <Table.Cell>120</Table.Cell>
-              <Table.Cell><Button size='small' primary>Choose</Button></Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>0x93a11b102245c7097cd4c998d71e76fd8b0a7895</Table.Cell>
-              <Table.Cell>180</Table.Cell>
-              <Table.Cell><Button size='small' primary>Choose</Button></Table.Cell>
-            </Table.Row>
+          <Table.Body>
+              {this.renderBidderInformation()}
           </Table.Body>
         </Table>
       </div>

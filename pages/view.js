@@ -16,7 +16,8 @@ class ViewContract extends Component{
       bidAmount:'',
       loading: false,
       bidLoadingSpinner: false,
-      contractNotFoundMessage:this.props.contractNotFoundMessage
+      contractNotFoundMessage:this.props.contractNotFoundMessage,
+      biddersInfo: this.props.biddersInfo
     }
 }
   static async getInitialProps(props){
@@ -27,13 +28,22 @@ class ViewContract extends Component{
       const accounts = await web3.eth.getAccounts();
       const farmFactoryObj = farmFactory(address);
       const contractDetails = await farmFactoryObj.methods.getFarmContractDetails().call();
+      const numberOfBidders = contractDetails[6];
+      const biddersInfo = await Promise.all(
+        Array(parseInt(numberOfBidders))
+        .fill(0)
+        .map((element, index) => {
+          return this.getBidderInfo(searchFarmObj, index);
+        })
+      );
       const details ={
           owner: contractDetails[0],
           coordinates: `Lattitide - ${contractDetails[1]} & Langitude - ${contractDetails[2]}`,
           coverageAmount: contractDetails[3],
           listedPrice: contractDetails[4],
           description: contractDetails[5],
-          bidders: contractDetails[6]
+          bidders: contractDetails[6],
+          biddersInfo: biddersInfo
         };
       return{details: details, address: address};
     }
@@ -52,27 +62,45 @@ retreiveAndUpdateContractDetails = async () => {
     const accounts = await web3.eth.getAccounts();
     const searchFarmObj = await farmFactory(this.state.searchAddress);
     const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
+    const numberOfBidders = farmDetails[6];
+    const biddersInfo = await Promise.all(
+      Array(parseInt(numberOfBidders))
+      .fill(0)
+      .map((element, index) => {
+        return this.getBidderInfo(searchFarmObj, index);
+      })
+    );
     const details ={
         owner: farmDetails[0],
         coordinates: `Lattitide - ${farmDetails[1]} & Langitude - ${farmDetails[2]}`,
         coverageAmount: farmDetails[3],
         listedPrice: farmDetails[4],
         description: farmDetails[5],
-        bidders: farmDetails[6]
+        bidders: numberOfBidders,
+        biddersInfo: biddersInfo
       };
-  this.setState({
-    address: this.state.searchAddress,
-    loading: false,
-    contractDetails: details
-  });
-}catch(error){
-  console.log(error);
-  this.setState({contractNotFoundMessage: 'No details found!. Please reverify search criteria.'});
-}
-this.setState({loading: false});
+    this.setState({
+      address: this.state.searchAddress,
+      loading: false,
+      contractDetails: details,
+      biddersInfo: biddersInfo
+    });
+  }catch(error){
+    console.log(error);
+    this.setState({contractNotFoundMessage: 'No details found!. Please reverify search criteria.'});
+  }
+  this.setState({loading: false});
 };
 
-  bidOnContract = async () => {
+getBidderInfo = async (searchFarmObj, index) => {
+      const bidderAddress = await searchFarmObj.methods.biddersAddressArray(index).call();
+      const amount = await searchFarmObj.methods.listOfBidders(bidderAddress).call();
+      const bidder = await searchFarmObj.methods.insurer().call();
+      const bidderChoosen = false;
+      return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: bidderChoosen});
+    };
+
+bidOnContract = async () => {
     const bidAmount = this.state.bidAmount;
     if(bidAmount !== '' && bidAmount > 0 ){
       this.setState({bidLoadingSpinner: true});
@@ -136,6 +164,7 @@ this.setState({loading: false});
                     bidAmount={this.state.bidAmount}
                     bidLoadingSpinner={this.state.bidLoadingSpinner}
                     bidOnContract={this.bidOnContract}
+                    biddersInfo={this.state.biddersInfo}
                     updateBiddingAmount={(event) => this.setState({bidAmount: event.target.value})}
                   />
               </Grid.Column> }
