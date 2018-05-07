@@ -28,18 +28,21 @@ class BiddingDetails extends Component{
           onClick={this.props.bidOnContract}
           floated='right' compact>Bid This Contract
         </Button>
-        <Table columns={3} textAlign='center' size='small'striped compact celled selectable>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Address Of Bidder</Table.HeaderCell>
-              <Table.HeaderCell>Amount Bidded</Table.HeaderCell>
-              <Table.HeaderCell>Accept?</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-              {this.renderBidderInformation()}
-          </Table.Body>
-        </Table>
+        { this.props.biddersInfo &&
+          <Table columns={3} textAlign='center' size='small'striped compact celled selectable>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Address Of Bidder</Table.HeaderCell>
+                <Table.HeaderCell>Amount Bidded</Table.HeaderCell>
+                <Table.HeaderCell>Choose Bidder</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {this.renderBidderInformation()}
+            </Table.Body>
+          </Table>
+        }
+
       </div>
     );
   }

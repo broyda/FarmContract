@@ -33,7 +33,7 @@ class ViewContract extends Component{
         Array(parseInt(numberOfBidders))
         .fill(0)
         .map((element, index) => {
-          return this.getBidderInfo(searchFarmObj, index);
+          return this.getBidderInfo(farmFactoryObj, index);
         })
       );
       const details ={
@@ -53,14 +53,14 @@ class ViewContract extends Component{
     event.preventDefault();
     if(this.state.searchAddress){
       this.setState({loading: true});
-      this.retreiveAndUpdateContractDetails();
+      this.retreiveAndUpdateContractDetails(this.state.searchAddress);
     }
   };
 
-retreiveAndUpdateContractDetails = async () => {
+retreiveAndUpdateContractDetails = async (address) => {
   try{
     const accounts = await web3.eth.getAccounts();
-    const searchFarmObj = await farmFactory(this.state.searchAddress);
+    const searchFarmObj = await farmFactory(address);
     const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
     const numberOfBidders = farmDetails[6];
     const biddersInfo = await Promise.all(
@@ -80,14 +80,15 @@ retreiveAndUpdateContractDetails = async () => {
         biddersInfo: biddersInfo
       };
     this.setState({
-      address: this.state.searchAddress,
+      address: address,
       loading: false,
       contractDetails: details,
-      biddersInfo: biddersInfo
+      biddersInfo: biddersInfo,
+      contractNotFoundMessage:''
     });
   }catch(error){
-    console.log(error);
-    this.setState({contractNotFoundMessage: 'No details found!. Please reverify search criteria.'});
+    console.log('inside catch block', error);
+    this.setState({contractNotFoundMessage: 'No details found!. Please verify search criteria.'});
   }
   this.setState({loading: false});
 };
@@ -108,7 +109,7 @@ bidOnContract = async () => {
         const accounts = await web3.eth.getAccounts();
         const contractObj = farmFactory(this.state.address);
         await contractObj.methods.bid(this.state.bidAmount).send({from: accounts[0]});
-        this.retreiveAndUpdateContractDetails();
+        this.retreiveAndUpdateContractDetails(this.state.address);
       }catch(error){
         console.log(error);
       }
@@ -117,7 +118,7 @@ bidOnContract = async () => {
   }
 
   renderContractDetails(){
-    if(this.state.address){
+    if(!this.state.contractNotFoundMessage){
       return <DisplayContractDetails contractDetails={this.state.contractDetails}/>
     }else{
       return(
@@ -153,12 +154,19 @@ bidOnContract = async () => {
                 onClick={this.searchContractDetails} floated='right'/>
             </Grid.Column>
           </Grid.Row>
+          {!this.state.contractNotFoundMessage &&
+            <Grid.Row>
+              <Grid.Column>
+                  <Divider horizontal>Details of {this.state.address}</Divider>
+              </Grid.Column>
+            </Grid.Row>
+          }
           <Grid.Row>
             <Grid.Column width={9}>
               {this.renderContractDetails()}
             </Grid.Column>
 
-            {this.state.address &&
+            {!this.state.contractNotFoundMessage &&
               <Grid.Column width={7} floated='right' container='true'>
                   <BiddingDetails
                     bidAmount={this.state.bidAmount}

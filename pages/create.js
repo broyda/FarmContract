@@ -37,7 +37,7 @@ class CreateContract extends Component{
     if(this.state.address){
       return (
       <div>
-          <Label pointing='right'>Contract Created successfully!!!! and number is {this.state.address}</Label>
+          <h4>Contract Created successfully!!!! {this.state.address}</h4>
             <Link route={`/view/${this.state.address}`}>
                 <a>
                 <Label color='teal'>View Contract Details here</Label>
