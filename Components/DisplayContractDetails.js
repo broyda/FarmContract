@@ -3,7 +3,8 @@ import {Card} from 'semantic-ui-react';
 
 class DisplayContractDetails extends Component{
   render(){
-    const {owner,coordinates, coverageAmount, listedPrice, description, bidders} = this.props.contractDetails;
+    const {owner,coordinates, coverageAmtAndContractBalance, listedPrice, description,
+       bidders, contractBalance} = this.props.contractDetails;
     const items = [
       {
         header: owner,
@@ -18,9 +19,9 @@ class DisplayContractDetails extends Component{
         style: {overflowWrap: 'break-word'}
       },
         {
-          header: coverageAmount,
-          meta:'Coverage Amount',
-          description: 'Contract Coverage amount in wei',
+          header: coverageAmtAndContractBalance,
+          meta:'Coverage Amount And Balance',
+          description: 'Contracts Coverage amount and Balance respectively in wei',
           style: {overflowWrap: 'break-word'}
         },
         {

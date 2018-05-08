@@ -1,35 +1,56 @@
 import React, {Component} from 'react';
-import {Table, Input, Button} from 'semantic-ui-react';
+import {Table, Input, Button, Label} from 'semantic-ui-react';
 import BiddingRow from './BiddingRow';
 
 class BiddingDetails extends Component{
   renderBidderInformation(){
       if(typeof this.props.biddersInfo !== 'undefined'
-        && this.props.biddersInfo !== ''
-        && this.props.biddersInfo !== null){
-      return this.props.biddersInfo.map((data, index) => {
-        return <BiddingRow bidderAddress={data.bidderAddress}
-          amount={data.amount}  key={index} bidderChoosen={data.bidderChoosen}/>;
-      })
+          && this.props.biddersInfo !== '' && this.props.biddersInfo !== null){
+            return this.props.biddersInfo.map((data, index) => {
+                return <BiddingRow bidderAddress={data.bidderAddress}
+                        amount={data.amount}
+                        key={index}
+                        bidderChoosen={data.bidderChoosen}
+                        chooseBidder={this.props.chooseBidder}
+                        chooseBidderSpinner={this.props.chooseBidderSpinner}
+                        />;
+                    })
+              }
+        };
+
+  renderBidderInputAndButton(bidderChoosen){
+    if(bidderChoosen){
+        return (
+            <Label color="blue" pointing='below' size='tiny'>Following Bidder has been choosen by Contract Owner</Label>
+        );
+        }
+        else{
+          return(
+                <div>
+                  <Input
+                    value={this.props.bidAmount}
+                    onChange={(event) => this.props.updateBiddingAmount(event)}
+                    placeholder='Bidding amount!'
+                    label='wei'
+                    labelPosition='right'
+                  />
+                  <Button
+                    primary
+                    loading={this.props.bidLoadingSpinner}
+                    onClick={this.props.bidOnContract}
+                    floated='right' compact>Bid This Contract
+                  </Button>
+                </div>
+            );
     }
-  };
+  }
 
   render(){
     return(
       <div>
-        <Input
-        value={this.props.bidAmount}
-        onChange={(event) => this.props.updateBiddingAmount(event)}
-        placeholder='Bidding amount!'label='wei' labelPosition='right'
-        />
-        <Button
-          primary
-          loading={this.props.bidLoadingSpinner}
-          onClick={this.props.bidOnContract}
-          floated='right' compact>Bid This Contract
-        </Button>
-        { this.props.biddersInfo &&
-          <Table columns={3} textAlign='center' size='small'striped compact celled selectable>
+        {this.renderBidderInputAndButton(this.props.bidderChoosen)}
+        { this.props.biddersInfo && this.props.biddersInfo.length > 0 &&
+          <Table columns={3} textAlign='center' size='small' striped compact celled selectable>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>Address Of Bidder</Table.HeaderCell>
@@ -42,7 +63,6 @@ class BiddingDetails extends Component{
             </Table.Body>
           </Table>
         }
-
       </div>
     );
   }

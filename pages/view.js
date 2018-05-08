@@ -12,12 +12,15 @@ class ViewContract extends Component{
     this.state={
       address: this.props.address,
       contractDetails: this.props.details,
+      coverageAmount: this.props.coverageAmount,
       searchAddress:'',
       bidAmount:'',
       loading: false,
       bidLoadingSpinner: false,
+      chooseBidderSpinner: false,
       contractNotFoundMessage:this.props.contractNotFoundMessage,
-      biddersInfo: this.props.biddersInfo
+      biddersInfo: this.props.biddersInfo,
+      bidderChoosen: false
     }
 }
   static async getInitialProps(props){
@@ -30,22 +33,23 @@ class ViewContract extends Component{
       const contractDetails = await farmFactoryObj.methods.getFarmContractDetails().call();
       const numberOfBidders = contractDetails[6];
       const biddersInfo = await Promise.all(
-        Array(parseInt(numberOfBidders))
-        .fill(0)
-        .map((element, index) => {
-          return this.getBidderInfo(farmFactoryObj, index);
-        })
-      );
+            Array(parseInt(numberOfBidders))
+            .fill(0)
+            .map((element, index) => {
+              return this.getBidderInfo(farmFactoryObj, index);
+            })
+          );
+
       const details ={
           owner: contractDetails[0],
           coordinates: `Lattitide - ${contractDetails[1]} & Langitude - ${contractDetails[2]}`,
-          coverageAmount: contractDetails[3],
+          coverageAmtAndContractBalance: `${contractDetails[3]} & 0`,
           listedPrice: contractDetails[4],
           description: contractDetails[5],
           bidders: contractDetails[6],
           biddersInfo: biddersInfo
         };
-      return{details: details, address: address};
+      return{details: details, address: address, coverageAmount: contractDetails[3]};
     }
   }
 
@@ -63,42 +67,54 @@ retreiveAndUpdateContractDetails = async (address) => {
     const searchFarmObj = await farmFactory(address);
     const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
     const numberOfBidders = farmDetails[6];
-    const biddersInfo = await Promise.all(
-      Array(parseInt(numberOfBidders))
-      .fill(0)
-      .map((element, index) => {
-        return this.getBidderInfo(searchFarmObj, index);
-      })
-    );
+    const bidderChoosen = await searchFarmObj.methods.isBidderChoosen().call();
+    let biddersInfo;
+
+    if(bidderChoosen){
+      const bidderAddress = await searchFarmObj.methods.insurer().call();
+      const amount = await searchFarmObj.methods.listOfBidders(bidderAddress).call();
+        biddersInfo = new Array({
+          bidderAddress: bidderAddress, amount: amount, bidderChoosen: true
+        });
+    }else{
+         biddersInfo = await Promise.all(
+          Array(parseInt(numberOfBidders))
+          .fill(0)
+          .map((element, index) => {
+            return this.getBidderInfo(searchFarmObj, index);
+          })
+        );
+    }
+    const contractBalance = await searchFarmObj.methods.contractBalance().call();
     const details ={
-        owner: farmDetails[0],
-        coordinates: `Lattitide - ${farmDetails[1]} & Langitude - ${farmDetails[2]}`,
-        coverageAmount: farmDetails[3],
-        listedPrice: farmDetails[4],
-        description: farmDetails[5],
-        bidders: numberOfBidders,
-        biddersInfo: biddersInfo
-      };
+                    owner: farmDetails[0],
+                    coordinates: `Lattitide - ${farmDetails[1]} & Langitude - ${farmDetails[2]}`,
+                    coverageAmtAndContractBalance: `${farmDetails[3]} & ${contractBalance}`,
+                    listedPrice: farmDetails[4],
+                    description: farmDetails[5],
+                    bidders: numberOfBidders,
+                    biddersInfo: biddersInfo
+                    };
     this.setState({
       address: address,
       loading: false,
+      coverageAmount: farmDetails[3],
       contractDetails: details,
       biddersInfo: biddersInfo,
-      contractNotFoundMessage:''
+      contractNotFoundMessage:'',
+      bidderChoosen: bidderChoosen
     });
   }catch(error){
     console.log('inside catch block', error);
-    this.setState({contractNotFoundMessage: 'No details found!. Please verify search criteria.'});
+    this.setState({contractNotFoundMessage: 'No details found!. Please verify search criteria.', loading: false});
   }
-  this.setState({loading: false});
 };
 
 getBidderInfo = async (searchFarmObj, index) => {
       const bidderAddress = await searchFarmObj.methods.biddersAddressArray(index).call();
       const amount = await searchFarmObj.methods.listOfBidders(bidderAddress).call();
       const bidder = await searchFarmObj.methods.insurer().call();
-      const bidderChoosen = false;
-      return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: bidderChoosen});
+      return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: false});
     };
 
 bidOnContract = async () => {
@@ -113,25 +129,37 @@ bidOnContract = async () => {
       }catch(error){
         console.log(error);
       }
-        this.setState({bidLoadingSpinner: false});
+      this.setState({bidLoadingSpinner: false});
     }
   }
+
+  chooseBidder = async (address, amount) => {
+      this.setState({chooseBidderSpinner: true});
+      try{
+        const accounts = await web3.eth.getAccounts();
+        const contractObj = farmFactory(this.state.address);
+        await contractObj.methods.chooseBidder(address).send({from: accounts[0], value: amount});
+        this.retreiveAndUpdateContractDetails(this.state.address);
+      }catch(error){
+        console.log('error occured inside chooseBidder', error);
+      }
+      this.setState({bidLoadingSpinner: false});
+    }
 
   renderContractDetails(){
     if(!this.state.contractNotFoundMessage){
       return <DisplayContractDetails contractDetails={this.state.contractDetails}/>
     }else{
       return(
-      <Message negative>
-        <Message.Header>
-          Contract Details
-        </Message.Header>
-      <p>
-          {this.state.contractNotFoundMessage}
-      </p>
-      </Message>
-      );
-
+            <Message negative>
+              <Message.Header>
+                Contract Details
+              </Message.Header>
+            <p>
+                {this.state.contractNotFoundMessage}
+            </p>
+            </Message>
+         );
     }
   }
 
@@ -167,15 +195,33 @@ bidOnContract = async () => {
             </Grid.Column>
 
             {!this.state.contractNotFoundMessage &&
-              <Grid.Column width={7} floated='right' container='true'>
-                  <BiddingDetails
-                    bidAmount={this.state.bidAmount}
-                    bidLoadingSpinner={this.state.bidLoadingSpinner}
-                    bidOnContract={this.bidOnContract}
-                    biddersInfo={this.state.biddersInfo}
-                    updateBiddingAmount={(event) => this.setState({bidAmount: event.target.value})}
-                  />
-              </Grid.Column> }
+                <Grid.Column width={7} floated='right' container='true'>
+                    <BiddingDetails
+                      bidAmount={this.state.bidAmount}
+                      bidLoadingSpinner={this.state.bidLoadingSpinner}
+                      chooseBidderSpinner={this.state.chooseBidderSpinner}
+                      bidOnContract={this.bidOnContract}
+                      biddersInfo={this.state.biddersInfo}
+                      updateBiddingAmount={(event) => this.setState({bidAmount: event.target.value})}
+                      bidderChoosen= {this.state.bidderChoosen}
+                      chooseBidder={this.chooseBidder}
+                    />
+                  { this.state.bidderChoosen &&
+                        <div>
+                          <br/>
+                          <br/>
+                          <Label pointing='below' color='blue' size='tiny'>Pay Coverage Amount of
+                            <u> {this.state.coverageAmount} wei</u> And Accept The Contract
+                          </Label>
+                          <br/>
+                          <div>
+                            <Input label='wei' labelPosition='right' placeholder='Coverage Amount'></Input>
+                            <Button primary floated='right'>Accept Contract</Button>
+                          </div>
+                        </div>
+                  }
+                </Grid.Column>
+               }
           </Grid.Row>
         </Grid>
       </Layout>

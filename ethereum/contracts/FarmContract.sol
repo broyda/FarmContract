@@ -296,9 +296,9 @@ contract FarmContract is usingOraclize{
     bytes32 oraclizeID;
     string  result;
 
-    function FarmContract(string _latitude, string _longitude,
-    uint _coverageAmount,  uint _listedPrice, string _description) public {
-        owner = msg.sender;
+    function FarmContract(string _latitude, string _longitude,uint _coverageAmount,
+    uint _listedPrice, string _description, address _owner) public {
+        owner = _owner;
         latitude = _latitude;
         longitude = _longitude;
         coverageAmount = _coverageAmount;
@@ -350,6 +350,13 @@ contract FarmContract is usingOraclize{
      }
   }
 
+  function isBidderChoosen() view public returns(bool){
+      if(insurer == 0){
+          return false;
+      }
+      return true;
+  }
+
   function killContract() onlyOwner public{
       require(contractSigned == false);
       selfdestruct(owner);
@@ -392,7 +399,7 @@ contract FarmFactoryContract{
   function createFarmContract(string _latitude, string _longitude,
     uint _coverageAmount,  uint _listedPrice, string _description) public {
         address farmContractAddress = new FarmContract(_latitude, _longitude,
-        _coverageAmount, _listedPrice, _description);
+        _coverageAmount, _listedPrice, _description, msg.sender);
         contractAddresseArray.push(farmContractAddress);
         contractAddressMap[msg.sender] = farmContractAddress;
     }
