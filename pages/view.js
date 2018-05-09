@@ -14,9 +14,7 @@ class ViewContract extends Component{
       contractDetails: this.props.details,
       coverageAmount: this.props.coverageAmount,
       searchAddress:'',
-      bidAmount:'',
-      loading: false,
-      bidLoadingSpinner: false,
+      seachLoading: false,
       chooseBidderSpinner: false,
       contractNotFoundMessage:this.props.contractNotFoundMessage,
       biddersInfo: this.props.biddersInfo,
@@ -56,7 +54,7 @@ class ViewContract extends Component{
   searchContractDetails = async (event) => {
     event.preventDefault();
     if(this.state.searchAddress){
-      this.setState({loading: true});
+      this.setState({seachLoading: true});
       this.retreiveAndUpdateContractDetails(this.state.searchAddress);
     }
   };
@@ -97,7 +95,7 @@ retreiveAndUpdateContractDetails = async (address) => {
                     };
     this.setState({
       address: address,
-      loading: false,
+      seachLoading: false,
       coverageAmount: farmDetails[3],
       contractDetails: details,
       biddersInfo: biddersInfo,
@@ -106,7 +104,7 @@ retreiveAndUpdateContractDetails = async (address) => {
     });
   }catch(error){
     console.log('inside catch block', error);
-    this.setState({contractNotFoundMessage: 'No details found!. Please verify search criteria.', loading: false});
+    this.setState({contractNotFoundMessage: 'No details found!. Please verify search criteria.', seachLoading: false});
   }
 };
 
@@ -117,19 +115,16 @@ getBidderInfo = async (searchFarmObj, index) => {
       return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: false});
     };
 
-bidOnContract = async () => {
-    const bidAmount = this.state.bidAmount;
-    if(bidAmount !== '' && bidAmount > 0 ){
-      this.setState({bidLoadingSpinner: true});
+bidOnContract = async (amount) => {
+    if(amount !== '' && amount > 0 ){
       try{
         const accounts = await web3.eth.getAccounts();
         const contractObj = farmFactory(this.state.address);
-        await contractObj.methods.bid(this.state.bidAmount).send({from: accounts[0]});
+        await contractObj.methods.bid(amount).send({from: accounts[0]});
         this.retreiveAndUpdateContractDetails(this.state.address);
       }catch(error){
         console.log(error);
       }
-      this.setState({bidLoadingSpinner: false});
     }
   }
 
@@ -178,14 +173,14 @@ bidOnContract = async () => {
                 size='medium' placeholder='Enter Contract Address'
                 />
               <Button primary content='search'
-                loading={this.state.loading}
+                loading={this.state.seachLoading}
                 onClick={this.searchContractDetails} floated='right'/>
             </Grid.Column>
           </Grid.Row>
           {!this.state.contractNotFoundMessage &&
             <Grid.Row>
               <Grid.Column>
-                  <Divider horizontal>Details of {this.state.address}</Divider>
+                  <Divider horizontal fitted>Details of {this.state.address}</Divider>
               </Grid.Column>
             </Grid.Row>
           }
@@ -197,12 +192,9 @@ bidOnContract = async () => {
             {!this.state.contractNotFoundMessage &&
                 <Grid.Column width={7} floated='right' container='true'>
                     <BiddingDetails
-                      bidAmount={this.state.bidAmount}
-                      bidLoadingSpinner={this.state.bidLoadingSpinner}
                       chooseBidderSpinner={this.state.chooseBidderSpinner}
                       bidOnContract={this.bidOnContract}
                       biddersInfo={this.state.biddersInfo}
-                      updateBiddingAmount={(event) => this.setState({bidAmount: event.target.value})}
                       bidderChoosen= {this.state.bidderChoosen}
                       chooseBidder={this.chooseBidder}
                     />

@@ -3,6 +3,13 @@ import {Table, Input, Button, Label} from 'semantic-ui-react';
 import BiddingRow from './BiddingRow';
 
 class BiddingDetails extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      bidLoadingSpinner: false,
+      biddingAmount:''
+    }
+  }
   renderBidderInformation(){
       if(typeof this.props.biddersInfo !== 'undefined'
           && this.props.biddersInfo !== '' && this.props.biddersInfo !== null){
@@ -18,6 +25,12 @@ class BiddingDetails extends Component{
               }
         };
 
+onClickBidButton = async () => {
+  this.setState({bidLoadingSpinner: true});
+  await this.props.bidOnContract(this.state.biddingAmount);
+  this.setState({bidLoadingSpinner: false});
+}
+
   renderBidderInputAndButton(bidderChoosen){
     if(bidderChoosen){
         return (
@@ -28,16 +41,16 @@ class BiddingDetails extends Component{
           return(
                 <div>
                   <Input
-                    value={this.props.bidAmount}
-                    onChange={(event) => this.props.updateBiddingAmount(event)}
+                    value={this.state.biddingAmount}
+                    onChange={(event) => this.setState({biddingAmount: event.target.value})}
                     placeholder='Bidding amount!'
                     label='wei'
                     labelPosition='right'
                   />
                   <Button
                     primary
-                    loading={this.props.bidLoadingSpinner}
-                    onClick={this.props.bidOnContract}
+                    loading={this.state.bidLoadingSpinner}
+                    onClick={this.onClickBidButton}
                     floated='right' compact>Bid This Contract
                   </Button>
                 </div>
