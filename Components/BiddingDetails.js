@@ -11,9 +11,10 @@ class BiddingDetails extends Component{
     }
   }
   renderBidderInformation(){
-      if(typeof this.props.biddersInfo !== 'undefined'
-          && this.props.biddersInfo !== '' && this.props.biddersInfo !== null){
-            return this.props.biddersInfo.map((data, index) => {
+      const bidInfo = this.props.biddersInfo;
+      if(bidInfo && bidInfo !== null
+        && typeof bidInfo !== 'undefined'){
+            return bidInfo.map((data, index) => {
                 return <BiddingRow bidderAddress={data.bidderAddress}
                         amount={data.amount}
                         key={index}
@@ -59,10 +60,11 @@ onClickBidButton = async () => {
   }
 
   render(){
+    const info = this.props.biddersInfo;
     return(
       <div>
         {this.renderBidderInputAndButton(this.props.bidderChoosen)}
-        { this.props.biddersInfo && this.props.biddersInfo.length > 0 &&
+        { info && info !== null && info.length > 0 &&
           <Table columns={3} textAlign='center' size='small' striped compact celled selectable>
             <Table.Header>
               <Table.Row>

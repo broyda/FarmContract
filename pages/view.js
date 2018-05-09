@@ -15,7 +15,6 @@ class ViewContract extends Component{
       coverageAmount: this.props.coverageAmount,
       searchAddress:'',
       seachLoading: false,
-      chooseBidderSpinner: false,
       contractNotFoundMessage:this.props.contractNotFoundMessage,
       biddersInfo: this.props.biddersInfo,
       bidderChoosen: false
@@ -129,7 +128,6 @@ bidOnContract = async (amount) => {
   }
 
   chooseBidder = async (address, amount) => {
-      this.setState({chooseBidderSpinner: true});
       try{
         const accounts = await web3.eth.getAccounts();
         const contractObj = farmFactory(this.state.address);
@@ -138,7 +136,6 @@ bidOnContract = async (amount) => {
       }catch(error){
         console.log('error occured inside chooseBidder', error);
       }
-      this.setState({bidLoadingSpinner: false});
     }
 
   renderContractDetails(){
@@ -192,11 +189,10 @@ bidOnContract = async (amount) => {
             {!this.state.contractNotFoundMessage &&
                 <Grid.Column width={7} floated='right' container='true'>
                     <BiddingDetails
-                      chooseBidderSpinner={this.state.chooseBidderSpinner}
                       bidOnContract={this.bidOnContract}
-                      biddersInfo={this.state.biddersInfo}
-                      bidderChoosen= {this.state.bidderChoosen}
                       chooseBidder={this.chooseBidder}
+                      bidderChoosen= {this.state.bidderChoosen}
+                      biddersInfo={this.state.biddersInfo}
                     />
                   { this.state.bidderChoosen &&
                         <div>
