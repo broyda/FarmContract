@@ -4,7 +4,7 @@ import {Link} from '../routes';
 
 export default () =>{
   return(
-    <Menu color='teal'>
+    <Menu>
         <Link route='/'>
           <a className='item'> Home </a>
         </Link>
@@ -14,6 +14,10 @@ export default () =>{
 
         <Link route='/view'>
           <a className='item'> View Contract </a>
+        </Link>
+
+        <Link route='/viewContractInsurer'>
+          <a className='item'> View Contract - Insurer </a>
         </Link>
 
         <Menu.Menu position='right'>
