@@ -38,7 +38,7 @@ class CreateContract extends Component{
       return (
       <div>
           <h4>Contract Created successfully!!!! {this.state.address}
-            <Link route={`/view/${this.state.address}`}>
+            <Link route={`/viewContractOwner/${this.state.address}`}>
                 <a>
                 <Label color='blue' pointing='left' size='tiny'> View Contract Details here</Label>
               </a>

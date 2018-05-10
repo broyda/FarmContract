@@ -12,12 +12,12 @@ export default () =>{
           <a className='item'> Create Contract </a>
         </Link>
 
-        <Link route='/view'>
-          <a className='item'> View Contract </a>
+        <Link route='/viewContractOwner'>
+          <a className='item'> View Contracts - Owner</a>
         </Link>
 
         <Link route='/viewContractInsurer'>
-          <a className='item'> View Contract - Insurer </a>
+          <a className='item'> View Contracts - Insurer </a>
         </Link>
 
         <Menu.Menu position='right'>

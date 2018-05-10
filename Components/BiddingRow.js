@@ -9,14 +9,14 @@ class BiddingRow extends Component {
     }
   }
 
-  onClickOfChooseBidder = async () => {
+onClickOfChooseBidder = async () => {
     this.setState({chooseBidderSpinner: true});
     await this.props.chooseBidder(this.props.bidderAddress, this.props.amount)
     this.setState({chooseBidderSpinner: false});
   }
   render(){
     return(
-        <Table.Row disabled={this.props.bidderChoosen}>
+        <Table.Row>
           <Table.Cell>
             {this.props.bidderAddress}
           </Table.Cell>
@@ -32,11 +32,6 @@ class BiddingRow extends Component {
                 onClick={this.onClickOfChooseBidder}
                 primary
               >Choose</Button>
-            </Table.Cell>
-          }
-          {this.props.bidderChoosen &&
-            <Table.Cell positive>
-              Accepted
             </Table.Cell>
           }
         </Table.Row>

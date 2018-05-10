@@ -4,9 +4,10 @@ import farmFactory from '../ethereum/farmFactory';
 import web3 from '../ethereum/web3';
 import {Grid, Card, Label, Header, Divider, Button, Input, Table, Message} from 'semantic-ui-react';
 import DisplayContractDetails from '../Components/DisplayContractDetails';
-import BiddingDetails from '../Components/BiddingDetails';
+import InsurerRow from '../Components/InsurerRow';
+import BidOnContract  from '../Components/BidOnContract';
 
-class ViewContract extends Component{
+class ViewContractInsurer extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -14,7 +15,7 @@ class ViewContract extends Component{
       contractDetails: this.props.details,
       coverageAmount: this.props.coverageAmount,
       searchAddress:'',
-      seachLoading: false,
+      searchLoading: false,
       contractNotFoundMessage:this.props.contractNotFoundMessage,
       biddersInfo: this.props.biddersInfo,
       bidderChoosen: false
@@ -29,15 +30,27 @@ class ViewContract extends Component{
       const farmFactoryObj = farmFactory(address);
       const contractDetails = await farmFactoryObj.methods.getFarmContractDetails().call();
       const numberOfBidders = contractDetails[6];
-      const biddersInfo = await Promise.all(
-            Array(parseInt(numberOfBidders))
-            .fill(0)
-            .map((element, index) => {
-              return this.getBidderInfo(farmFactoryObj, index);
-            })
-          );
-
-      const details ={
+      const bidderChoosen = await farmFactoryObj.methods.isBidderChoosen().call();
+      let biddersInfo;
+      if(bidderChoosen){
+        const bidderAddress = await farmFactoryObj.methods.insurer().call();
+        const amount = await farmFactoryObj.methods.listOfBidders(bidderAddress).call();
+          biddersInfo = new Array({
+            bidderAddress: bidderAddress, amount: amount, bidderChoosen: true
+          });
+      }else{
+        biddersInfo = await Promise.all(
+         Array(parseInt(numberOfBidders))
+         .fill(0)
+         .map( async (element, index) => {
+           const bidderAddress = await farmFactoryObj.methods.biddersAddressArray(index).call();
+           const amount = await farmFactoryObj.methods.listOfBidders(bidderAddress).call();
+           const bidder = await farmFactoryObj.methods.insurer().call();
+           return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: false});
+         })
+       );
+      }
+    const details ={
           owner: contractDetails[0],
           coordinates: `Lattitide - ${contractDetails[1]} & Langitude - ${contractDetails[2]}`,
           coverageAmtAndContractBalance: `${contractDetails[3]} & 0`,
@@ -53,7 +66,7 @@ class ViewContract extends Component{
   searchContractDetails = async (event) => {
     event.preventDefault();
     if(this.state.searchAddress){
-      this.setState({seachLoading: true});
+      this.setState({searchLoading: true});
       this.retreiveAndUpdateContractDetails(this.state.searchAddress);
     }
   };
@@ -66,7 +79,6 @@ retreiveAndUpdateContractDetails = async (address) => {
     const numberOfBidders = farmDetails[6];
     const bidderChoosen = await searchFarmObj.methods.isBidderChoosen().call();
     let biddersInfo;
-
     if(bidderChoosen){
       const bidderAddress = await searchFarmObj.methods.insurer().call();
       const amount = await searchFarmObj.methods.listOfBidders(bidderAddress).call();
@@ -77,8 +89,11 @@ retreiveAndUpdateContractDetails = async (address) => {
          biddersInfo = await Promise.all(
           Array(parseInt(numberOfBidders))
           .fill(0)
-          .map((element, index) => {
-            return this.getBidderInfo(searchFarmObj, index);
+          .map(async (element, index) => {
+            const bidderAddress = await searchFarmObj.methods.biddersAddressArray(index).call();
+            const amount = await searchFarmObj.methods.listOfBidders(bidderAddress).call();
+            const bidder = await searchFarmObj.methods.insurer().call();
+            return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: false});
           })
         );
     }
@@ -94,7 +109,7 @@ retreiveAndUpdateContractDetails = async (address) => {
                     };
     this.setState({
       address: address,
-      seachLoading: false,
+      searchLoading: false,
       coverageAmount: farmDetails[3],
       contractDetails: details,
       biddersInfo: biddersInfo,
@@ -103,19 +118,12 @@ retreiveAndUpdateContractDetails = async (address) => {
     });
   }catch(error){
     console.log('inside catch block', error);
-    this.setState({contractNotFoundMessage: 'No details found!. Please verify search criteria.', seachLoading: false});
+    this.setState({contractNotFoundMessage: 'No details found!. Please verify search criteria.', loading: false});
   }
 };
 
-getBidderInfo = async (searchFarmObj, index) => {
-      const bidderAddress = await searchFarmObj.methods.biddersAddressArray(index).call();
-      const amount = await searchFarmObj.methods.listOfBidders(bidderAddress).call();
-      const bidder = await searchFarmObj.methods.insurer().call();
-      return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: false});
-    };
-
 bidOnContract = async (amount) => {
-    if(amount !== '' && amount > 0 ){
+    if(amount && amount !== '' && amount > 0 ){
       try{
         const accounts = await web3.eth.getAccounts();
         const contractObj = farmFactory(this.state.address);
@@ -127,16 +135,15 @@ bidOnContract = async (amount) => {
     }
   }
 
-  chooseBidder = async (address, amount) => {
-      try{
-        const accounts = await web3.eth.getAccounts();
-        const contractObj = farmFactory(this.state.address);
-        await contractObj.methods.chooseBidder(address).send({from: accounts[0], value: amount});
-        this.retreiveAndUpdateContractDetails(this.state.address);
-      }catch(error){
-        console.log('error occured inside chooseBidder', error);
-      }
-    }
+renderBidderInformation(){
+    return this.state.biddersInfo.map((data, index) => {
+          return <InsurerRow bidderAddress={data.bidderAddress}
+                  amount={data.amount}
+                  key={index}
+                  bidderChoosen={data.bidderChoosen}
+                  />;
+              })
+  };
 
   renderContractDetails(){
     if(!this.state.contractNotFoundMessage){
@@ -156,12 +163,15 @@ bidOnContract = async (amount) => {
   }
 
   render(){
+    const bidInfo = this.state.biddersInfo;
+    const {bidderChoosen} = this.state;
+    const bidInfoAvailable = bidInfo && bidInfo !== null && typeof bidInfo !== 'undefined' && bidInfo.length > 0;
     return(
       <Layout>
         <Grid color='teal'>
           <Grid.Row>
             <Grid.Column  width={9}>
-              <Divider horizontal>FARM CONTRACT DEATILS PAGE!!</Divider>
+              <Divider horizontal>CONTRACT INSURER PAGE</Divider>
             </Grid.Column>
             <Grid.Column width={7} textAlign='right'>
               <Input
@@ -170,7 +180,7 @@ bidOnContract = async (amount) => {
                 size='medium' placeholder='Enter Contract Address'
                 />
               <Button primary content='search'
-                loading={this.state.seachLoading}
+                loading={this.state.loading}
                 onClick={this.searchContractDetails} floated='right'/>
             </Grid.Column>
           </Grid.Row>
@@ -188,26 +198,33 @@ bidOnContract = async (amount) => {
 
             {!this.state.contractNotFoundMessage &&
                 <Grid.Column width={7} floated='right' container='true'>
-                    <BiddingDetails
-                      bidOnContract={this.bidOnContract}
-                      chooseBidder={this.chooseBidder}
-                      bidderChoosen= {this.state.bidderChoosen}
-                      biddersInfo={this.state.biddersInfo}
-                    />
-                  { this.state.bidderChoosen &&
-                        <div>
-                          <br/>
-                          <br/>
-                          <Label pointing='below' color='blue' size='tiny'>Pay Coverage Amount of
-                            <u> {this.state.coverageAmount} wei</u> And Accept The Contract
-                          </Label>
-                          <br/>
-                          <div>
-                            <Input label='wei' labelPosition='right' placeholder='Coverage Amount'></Input>
-                            <Button primary floated='right'>Accept Contract</Button>
-                          </div>
-                        </div>
-                  }
+                {!bidderChoosen &&
+                  <BidOnContract bidOnContract={this.bidOnContract}/>
+                }
+
+                {bidderChoosen &&
+                  <div style={{marginTop:'25px'}}>
+                      <Label color="green" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
+                  </div>
+                }
+                {!bidderChoosen && bidInfoAvailable &&
+                  <div style={{marginTop:'25px'}}>
+                      <Label color="green" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
+                  </div>
+                }
+                {bidInfo && bidInfoAvailable &&
+                        <Table textAlign='center' size='small' striped compact celled selectable color='green'>
+                          <Table.Header>
+                            <Table.Row >
+                              <Table.HeaderCell>Address Of Insurer</Table.HeaderCell>
+                              <Table.HeaderCell>Quote/Premium</Table.HeaderCell>
+                            </Table.Row>
+                          </Table.Header>
+                          <Table.Body>
+                            {this.renderBidderInformation()}
+                          </Table.Body>
+                        </Table>
+                }
                 </Grid.Column>
                }
           </Grid.Row>
@@ -217,4 +234,4 @@ bidOnContract = async (amount) => {
   }
 }
 
-export default ViewContract;
+export default ViewContractInsurer;
