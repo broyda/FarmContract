@@ -280,7 +280,7 @@ contract FarmContract is usingOraclize{
     address public owner;
     string  latitude; // The latitude (say, the mean approx. latitude)
     string longitude; // The latitude (say, the mean approx. latitude)
-    uint  coverageAmount; // Coverage required for this contract.
+    uint coverageAmount; // Coverage required for this contract.
     uint  listedPrice; // Amount ready to pay by creator/owner for contract to be covered
     string description; // Contract description
     address public insurer; // Insurer for this contract
@@ -307,11 +307,13 @@ contract FarmContract is usingOraclize{
     }
 
     //To be invoked by insurers with bidding amount for the contract
-    function bid(uint amount) biddingRules(amount) checkInsurer public {
+    function bid(uint amount) biddingRules(amount) checkInsurer payable public {
         if(listOfBidders[msg.sender] == 0){
+             require(msg.value >= coverageAmount);
              numberOfBidders++;
              biddersAddressArray.push(msg.sender);
         }
+       require(listOfBidders[msg.sender] != amount);
        listOfBidders[msg.sender] = amount;
     }
 
@@ -324,6 +326,22 @@ contract FarmContract is usingOraclize{
         require(listOfBidders[_bidderAddress] != 0);
         require(msg.value >= listOfBidders[_bidderAddress]);
         insurer = _bidderAddress;
+        insurer.transfer(listOfBidders[_bidderAddress]);
+
+       for(uint i = 0; i<numberOfBidders; i++){
+           address bidderAddress = biddersAddressArray[i];
+           if(bidderAddress != _bidderAddress){
+               delete listOfBidders[bidderAddress];
+               bidderAddress.transfer(coverageAmount);
+           }
+       }
+    }
+
+    function cancelBid() public checkInsurer{
+        require(listOfBidders[msg.sender] != 0);
+        delete listOfBidders[msg.sender];
+        msg.sender.transfer(coverageAmount);
+        numberOfBidders--;
     }
 
     //to be invoked by Insurer to accept the contract
