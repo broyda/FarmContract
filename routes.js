@@ -2,6 +2,6 @@ const routes = require('next-routes')();
 
 routes.add("/createContract", "/create")
       .add("/viewContractOwner/:address", "/viewContractOwner")
-      .add("/ViewContractInsurer", "/ViewContractInsurer");
+      .add("/viewContractInsurer", "/viewContractInsurer");
 
 module.exports = routes;

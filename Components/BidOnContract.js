@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Input, Button} from 'semantic-ui-react';
+import {Input, Button, Label, Divider} from 'semantic-ui-react';
 
 class BidOnContract extends Component{
   constructor(props){
@@ -32,6 +32,10 @@ class BidOnContract extends Component{
           onClick={this.clickOnBidContract}
           floated='right' compact>Bid This Contract
         </Button>
+        <div style={{marginTop:'5px'}}>
+            <Label color='grey' pointing='above'>You need to transfer {this.props.coverageAmount} Wei to Bid on this Contract!</Label>
+        </div>
+        <Divider/>
       </div>
     );
   }

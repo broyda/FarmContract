@@ -17,7 +17,9 @@ class ViewContract extends Component{
       seachLoading: false,
       contractNotFoundMessage:this.props.contractNotFoundMessage,
       biddersInfo: this.props.biddersInfo,
-      bidderChoosen: false
+      bidderChoosen: false,
+      transferAddress:'',
+      transferButtonLoading: false
     }
 }
   static async getInitialProps(props){
@@ -25,7 +27,6 @@ class ViewContract extends Component{
     if(!address){
       return{contractNotFoundMessage: 'No Contract Details found. Please search using Contract Address'};
     }else{
-      const accounts = await web3.eth.getAccounts();
       const farmFactoryObj = farmFactory(address);
       const contractDetails = await farmFactoryObj.methods.getFarmContractDetails().call();
       const numberOfBidders = contractDetails[6];
@@ -73,7 +74,6 @@ class ViewContract extends Component{
 
 retreiveAndUpdateContractDetails = async (address) => {
   try{
-    const accounts = await web3.eth.getAccounts();
     const searchFarmObj = await farmFactory(address);
     const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
     const numberOfBidders = farmDetails[6];
@@ -145,6 +145,19 @@ chooseBidder = async (address, amount) => {
         console.log('error occured inside chooseBidder', error);
       }
     }
+
+transferContract = async (address) => {
+          try{
+            this.setState({transferButtonLoading: true});
+            const accounts = await web3.eth.getAccounts();
+            const contractObj = farmFactory(this.state.address);
+            await contractObj.methods.transferContract(address).send({from: accounts[0]});
+            this.retreiveAndUpdateContractDetails(this.state.address);
+          }catch(error){
+            console.log('error occured inside chooseBidder', error);
+          }
+          this.setState({transferButtonLoading: false});
+        }
 
   renderContractDetails(){
     if(!this.state.contractNotFoundMessage){
@@ -221,7 +234,7 @@ chooseBidder = async (address, amount) => {
                     <Label color="blue" pointing='below' size='tiny' color="green">Following Insurer has been choosen.</Label>
                 }
 
-                { bidderInfoAvailable &&
+                {bidderInfoAvailable &&
                   <Table textAlign='center' size='small' striped compact celled selectable>
                     <Table.Header>
                       <Table.Row>
@@ -237,6 +250,22 @@ chooseBidder = async (address, amount) => {
                     </Table.Body>
                   </Table>
                 }
+                <Divider/>
+                <div style={{marginTop:'25px'}}>
+                  <Input
+                    value={this.state.transferAddress}
+                    onChange={(event) => this.setState({transferAddress: event.target.value})}
+                    placeholder='Address to be Transferred'
+                    label='Address'
+                    labelPosition='right'
+                  />
+                  <Button
+                    primary
+                    floated='right'
+                    loading={this.state.transferButtonLoading}
+                    disabled={true}
+                   >Transfer Contract</Button>
+               </div>
               </Grid.Column>
                }
           </Grid.Row>

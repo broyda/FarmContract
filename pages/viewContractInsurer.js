@@ -26,7 +26,6 @@ class ViewContractInsurer extends Component{
     if(!address){
       return{contractNotFoundMessage: 'No Contract Details found. Please search using Contract Address'};
     }else{
-      const accounts = await web3.eth.getAccounts();
       const farmFactoryObj = farmFactory(address);
       const contractDetails = await farmFactoryObj.methods.getFarmContractDetails().call();
       const numberOfBidders = contractDetails[6];
@@ -93,7 +92,8 @@ retreiveAndUpdateContractDetails = async (address) => {
             const bidderAddress = await searchFarmObj.methods.biddersAddressArray(index).call();
             const amount = await searchFarmObj.methods.listOfBidders(bidderAddress).call();
             const bidder = await searchFarmObj.methods.insurer().call();
-            return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: false});
+            return({bidderAddress: bidderAddress, amount: amount,
+              bidderChoosen: false, showCancelButton: accounts[0] === bidderAddress});
           })
         );
     }
@@ -127,7 +127,7 @@ bidOnContract = async (amount) => {
       try{
         const accounts = await web3.eth.getAccounts();
         const contractObj = farmFactory(this.state.address);
-        await contractObj.methods.bid(amount).send({from: accounts[0]});
+        await contractObj.methods.bid(amount).send({from: accounts[0], value: this.state.coverageAmount});
         this.retreiveAndUpdateContractDetails(this.state.address);
       }catch(error){
         console.log(error);
@@ -135,12 +135,26 @@ bidOnContract = async (amount) => {
     }
   }
 
+  cancelBid = async () =>{
+    try{
+      const accounts = await web3.eth.getAccounts();
+      const farmContractObj = await farmFactory(this.state.address);
+      await farmContractObj.methods.cancelBid().send({from: accounts[0]});
+      this.retreiveAndUpdateContractDetails(this.state.address);
+    }catch(error){
+      console.log('error occurred!!', error);
+    }
+  }
+
 renderBidderInformation(){
     return this.state.biddersInfo.map((data, index) => {
-          return <InsurerRow bidderAddress={data.bidderAddress}
+          return <InsurerRow
+                  bidderAddress={data.bidderAddress}
+                  showCancelButton = {data.showCancelButton}
                   amount={data.amount}
                   key={index}
                   bidderChoosen={data.bidderChoosen}
+                  cancelBid = {this.cancelBid}
                   />;
               })
   };
@@ -171,7 +185,7 @@ renderBidderInformation(){
         <Grid color='teal'>
           <Grid.Row>
             <Grid.Column  width={9}>
-              <Divider horizontal>CONTRACT INSURER PAGE</Divider>
+              <Divider horizontal>INSURER PAGE</Divider>
             </Grid.Column>
             <Grid.Column width={7} textAlign='right'>
               <Input
@@ -197,34 +211,34 @@ renderBidderInformation(){
             </Grid.Column>
 
             {!this.state.contractNotFoundMessage &&
-                <Grid.Column width={7} floated='right' container='true'>
-                {!bidderChoosen &&
-                  <BidOnContract bidOnContract={this.bidOnContract}/>
-                }
-
-                {bidderChoosen &&
-                  <div style={{marginTop:'25px'}}>
-                      <Label color="green" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
-                  </div>
-                }
-                {!bidderChoosen && bidInfoAvailable &&
-                  <div style={{marginTop:'25px'}}>
-                      <Label color="green" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
-                  </div>
-                }
-                {bidInfo && bidInfoAvailable &&
-                        <Table textAlign='center' size='small' striped compact celled selectable color='green'>
-                          <Table.Header>
-                            <Table.Row >
-                              <Table.HeaderCell>Address Of Insurer</Table.HeaderCell>
-                              <Table.HeaderCell>Quote/Premium</Table.HeaderCell>
-                            </Table.Row>
-                          </Table.Header>
-                          <Table.Body>
-                            {this.renderBidderInformation()}
-                          </Table.Body>
-                        </Table>
-                }
+              <Grid.Column width={7} floated='right' container='true'>
+                  {!bidderChoosen &&
+                    <BidOnContract bidOnContract={this.bidOnContract} coverageAmount={this.state.coverageAmount}/>
+                  }
+                  {bidderChoosen &&
+                    <div style={{marginTop:'25px'}}>
+                        <Label color="green" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
+                    </div>
+                  }
+                  {!bidderChoosen && bidInfoAvailable &&
+                    <div style={{marginTop:'25px'}}>
+                        <Label color="green" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
+                    </div>
+                  }
+                  {bidInfoAvailable &&
+                          <Table textAlign='center' size='small' striped compact celled selectable color='green'>
+                            <Table.Header>
+                              <Table.Row >
+                                <Table.HeaderCell>Address Of Insurer</Table.HeaderCell>
+                                <Table.HeaderCell>Quote/Premium</Table.HeaderCell>
+                                <Table.HeaderCell>Bid</Table.HeaderCell>
+                              </Table.Row>
+                            </Table.Header>
+                            <Table.Body>
+                              {this.renderBidderInformation()}
+                            </Table.Body>
+                          </Table>
+                   }
                 </Grid.Column>
                }
           </Grid.Row>
