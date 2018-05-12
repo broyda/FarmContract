@@ -74,12 +74,12 @@ class CreateContract extends Component{
                   <Grid>
                     <Grid.Row>
                       <Grid.Column>
-                        <Label pointing='below' color='brown'>Choose Cordinates of your FARM:</Label>
+                        <Label pointing='below' color='blue'>Choose Cordinates of your FARM:</Label>
                       </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
                       <Grid.Column width={4}>
-                          <Label pointing='right' color='brown'>Longitude</Label>
+                          <Label pointing='right' color='teal'>Longitude</Label>
                       </Grid.Column>
                       <Grid.Column width={6}>
                           <Form.Field>
@@ -94,7 +94,7 @@ class CreateContract extends Component{
                     </Grid.Row>
                     <Grid.Row>
                       <Grid.Column width={4}>
-                        <Label color='brown'> Lattitude</Label>
+                        <Label color='teal'> Lattitude</Label>
                       </Grid.Column>
                       <Grid.Column width={6}>
                         <Form.Field>
@@ -110,7 +110,7 @@ class CreateContract extends Component{
                        <Divider inverted />
                     <Grid.Row>
                       <Grid.Column width={4}>
-                        <Label pointing='right' color='brown'>Coverage Amount</Label>
+                        <Label pointing='right' color='grey'>Coverage Amount</Label>
                       </Grid.Column>
                       <Grid.Column width={6}>
                         <Form.Field>
@@ -126,7 +126,7 @@ class CreateContract extends Component{
                     </Grid.Row>
                     <Grid.Row>
                       <Grid.Column width={4}>
-                        <Label pointing='right' color='brown'>Listing Price</Label>
+                        <Label pointing='right' color='grey'>Listing Price</Label>
                       </Grid.Column>
                       <Grid.Column width={6}>
                         <Form.Field>
@@ -142,7 +142,7 @@ class CreateContract extends Component{
                     </Grid.Row>
                     <Grid.Row>
                       <Grid.Column width={4}>
-                        <Label pointing='right' color='brown'>Contract Description</Label>
+                        <Label pointing='right' color='grey'>Contract Description</Label>
                       </Grid.Column>
                       <Grid.Column width={6}>
                         <Form.Field>
