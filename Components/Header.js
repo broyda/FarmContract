@@ -8,7 +8,7 @@ export default () =>{
         <Link route='/'>
           <a className='item'> Home </a>
         </Link>
-        <Link route='/create'>
+        <Link route='/createContract'>
           <a className='item'> Create Contract </a>
         </Link>
 
@@ -21,7 +21,7 @@ export default () =>{
         </Link>
 
         <Menu.Menu position='right'>
-          <Link route='/create'>
+          <Link route='/createContract'>
             <a className='item'> + </a>
           </Link>
           <Link route='/'>

@@ -412,6 +412,7 @@ contract FarmContract is usingOraclize{
 
 contract FarmFactoryContract{
   address[] public contractAddresseArray;
+  mapping(address => address[]) public contractListByAddress;
   mapping(address => address) public contractAddressMap;
 
   function createFarmContract(string _latitude, string _longitude,
@@ -420,5 +421,11 @@ contract FarmFactoryContract{
         _coverageAmount, _listedPrice, _description, msg.sender);
         contractAddresseArray.push(farmContractAddress);
         contractAddressMap[msg.sender] = farmContractAddress;
+        address[] storage contractList = contractListByAddress[msg.sender];
+        contractList.push(farmContractAddress);
+    }
+
+    function getContractByAddress(address _address) view public returns(address[]){
+        return contractListByAddress[_address];
     }
 }
