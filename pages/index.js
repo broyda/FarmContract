@@ -4,9 +4,9 @@ import Layout from '../Components/LayoutComponent';
 class FarmContractIndex extends Component{
   render(){
     return(
-      <div style={{backgroundColor:'#F2EFE4'}}>
+      <div style={{backgroundColor:'#b2cecf', width:'100%', height: '610px'}}>
         <Layout>
-          <div style={{marginTop: '150px'}}>
+          <div style={{marginTop: '150px', color:'#EB593C'}}>
               <center><h3>Welcome to Farm Contract Marketplace!!!!!</h3></center>
           </div>
         </Layout>

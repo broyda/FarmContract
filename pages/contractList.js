@@ -40,28 +40,29 @@ class ContractList extends Component{
   }
 
   render(){
+    const style = {color:'#d02552', fontWeight: 'bolder'};
     this.fetchContractAddressList();
     return(
-      <div style={{backgroundColor:'#F2EFE4'}}>
+      <div style={{backgroundColor:'#b2cecf', width:'100%', height:'600px'}}>
         <Layout>
           <div style={{marginTop:'25px'}}/>
-          <Divider horizontal>Welcome to Contracts Home page</Divider>
+          <Divider horizontal><span style={style}>LIST OF AVAILABLE CONTRACTS</span></Divider>
           <div style={{marginTop:'25px'}}/>
           {this.state.items &&
               <Table textAlign='center' size='small' striped compact celled selectable>
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>
-                      Address
+                      <span style={style}>Address</span>
                     </Table.HeaderCell>
                     <Table.HeaderCell>
-                      Description
+                      <span style={style}>Description</span>
                     </Table.HeaderCell>
                     <Table.HeaderCell>
-                      Number of Bidders
+                      <span style={style}>Number of Bidders</span>
                     </Table.HeaderCell>
                     <Table.HeaderCell>
-                      Click Here
+                      <span style={style}>Click Here</span>
                     </Table.HeaderCell>
                 </Table.Row>
                 </Table.Header>

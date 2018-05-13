@@ -178,13 +178,14 @@ renderBidderInformation(){
     const bidInfo = this.state.biddersInfo;
     const {bidderChoosen} = this.state;
     const bidInfoAvailable = bidInfo && bidInfo !== null && typeof bidInfo !== 'undefined' && bidInfo.length > 0;
+    const colorProp = {color:'#EB593C'};
     return(
-      <div style={{backgroundColor:'#F2EFE4'}}>
+      <div style={{backgroundColor:'#b2cecf', width:'100%', height:'600px'}}>
         <Layout>
           <Grid color='teal'>
             <Grid.Row>
               <Grid.Column  width={9}>
-                <Divider horizontal>INSURER PAGE</Divider>
+                <Divider horizontal><span style={colorProp}>CONTRACT INSURER PAGE</span></Divider>
               </Grid.Column>
               <Grid.Column width={7} textAlign='right'>
                 <Input
@@ -192,9 +193,11 @@ renderBidderInformation(){
                   onChange={(event) => {this.setState({searchAddress: event.target.value})}}
                   size='medium' placeholder='Enter Contract Address'
                   />
-                <Button content='Search'
+                <Button
+                  content='Search'
                   icon="search"
-                  color='brown'
+                  color='red'
+                  size='medium'
                   loading={this.state.loading}
                   onClick={this.searchContractDetails} floated='right'/>
               </Grid.Column>
@@ -202,7 +205,10 @@ renderBidderInformation(){
             {!this.state.contractNotFoundMessage &&
               <Grid.Row>
                 <Grid.Column>
-                    <Divider horizontal fitted>Details of {this.state.address}</Divider>
+                    <Divider horizontal fitted>
+                      <span style={colorProp}>Details of {this.state.address}
+                      </span>
+                    </Divider>
                 </Grid.Column>
               </Grid.Row>
             }
@@ -218,21 +224,27 @@ renderBidderInformation(){
                     }
                     {bidderChoosen &&
                       <div style={{marginTop:'25px'}}>
-                          <Label color="brown" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
+                          <Label color="red" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
                       </div>
                     }
                     {!bidderChoosen && bidInfoAvailable &&
                       <div style={{marginTop:'25px'}}>
-                          <Label color="brown" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
+                          <Label color="red" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
                       </div>
                     }
                     {bidInfoAvailable &&
-                            <Table textAlign='center' size='small' striped compact celled selectable color='green'>
+                            <Table textAlign='center' size='small' striped compact celled selectable>
                               <Table.Header>
                                 <Table.Row >
-                                  <Table.HeaderCell>Address Of Insurer</Table.HeaderCell>
-                                  <Table.HeaderCell>Quote/Premium</Table.HeaderCell>
-                                  <Table.HeaderCell>Bid</Table.HeaderCell>
+                                  <Table.HeaderCell>
+                                    <span style={colorProp}>Address Of Insurer</span>
+                                  </Table.HeaderCell>
+                                  <Table.HeaderCell>
+                                    <span style={colorProp}>Quote/Premium</span>
+                                  </Table.HeaderCell>
+                                  <Table.HeaderCell>
+                                    <span style={colorProp}>Bid</span>
+                                  </Table.HeaderCell>
                                 </Table.Row>
                               </Table.Header>
                               <Table.Body>

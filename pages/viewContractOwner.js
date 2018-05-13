@@ -189,15 +189,15 @@ transferContract = async (address) => {
     const {bidderChoosen, biddersInfo, contractNotFoundMessage} = this.state;
     const bidderInfoAvailable = biddersInfo && biddersInfo !== null
         && typeof biddersInfo !== 'undefined' && biddersInfo.length > 0;
-    console.log('bidderInfoAvailable', bidderInfoAvailable);
-    console.log('bidderChoosen', bidderChoosen);
+    const style = {color:'#d02552', fontWeight: 'bolder'};
+    const colorProp = {color:'#EB593C'};
     return(
-        <div style={{backgroundColor:'#F2EFE4'}}>
+        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'610px'}}>
           <Layout>
             <Grid color='teal'>
               <Grid.Row>
                 <Grid.Column  width={9}>
-                  <Divider horizontal>FARM CONTRACT DEATILS PAGE!!</Divider>
+                  <Divider horizontal><span style={style}>CONTRACT OWNER PAGE</span></Divider>
                 </Grid.Column>
                 <Grid.Column width={7} textAlign='right'>
                   <Input
@@ -207,7 +207,7 @@ transferContract = async (address) => {
                     />
                   <Button content='Search'
                     icon="search"
-                    color='brown'
+                    color='red'
                     loading={this.state.seachLoading}
                     onClick={this.searchContractDetails} floated='right'/>
                 </Grid.Column>
@@ -215,7 +215,9 @@ transferContract = async (address) => {
               {!contractNotFoundMessage &&
                 <Grid.Row>
                   <Grid.Column>
-                      <Divider horizontal fitted>Details of {this.state.address}</Divider>
+                      <Divider horizontal fitted>
+                        <span style={style}>Details of {this.state.address}</span>
+                    </Divider>
                   </Grid.Column>
                 </Grid.Row>
               }
@@ -227,7 +229,7 @@ transferContract = async (address) => {
                 {!contractNotFoundMessage &&
                     <Grid.Column width={7} floated='right' container='true'>
                     {!bidderChoosen && bidderInfoAvailable &&
-                      <center style={{marginBottom:'10px'}}><Label color="grey" size='medium'>
+                      <center style={{marginBottom:'10px'}}><Label pointing='below' color="teal" size='medium'>
                           Insurers/Bidders Information</Label>
                       </center>
                     }
@@ -240,10 +242,16 @@ transferContract = async (address) => {
                       <Table textAlign='center' size='small' striped compact celled selectable>
                         <Table.Header>
                           <Table.Row>
-                            <Table.HeaderCell>Address Of Bidder</Table.HeaderCell>
-                            <Table.HeaderCell>Quote/Premium</Table.HeaderCell>
+                            <Table.HeaderCell>
+                              <span style={colorProp}>Address Of Bidder</span>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                              <span style={colorProp}>Quote/Premium</span>
+                            </Table.HeaderCell>
                             {!bidderChoosen &&
-                              <Table.HeaderCell>Choose Bidder</Table.HeaderCell>
+                              <Table.HeaderCell>
+                                <span style={colorProp}>Choose Bidder</span>
+                              </Table.HeaderCell>
                              }
                           </Table.Row>
                         </Table.Header>
@@ -262,7 +270,7 @@ transferContract = async (address) => {
                         labelPosition='right'
                       />
                       <Button
-                        color = 'brown'
+                        color = 'red'
                         floated='right'
                         loading={this.state.transferButtonLoading}
                         disabled={true}

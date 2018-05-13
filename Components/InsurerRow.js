@@ -26,7 +26,7 @@ class InsurerRow extends Component {
               </Table.Cell>
               <Table.Cell>
                 <Button
-                  color='brown'
+                  color='red'
                   disabled={!this.props.showCancelButton}
                   onClick={this.cancelBid}
                   loading={this.state.loading}

@@ -66,7 +66,7 @@ class CreateContract extends Component{
 
   render(){
     return(
-        <div style={{backgroundColor:'#F2EFE4'}}>
+        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'600px'}}>
           <Layout>
           <Container style={{marginTop:'10px'}}>
             <div>
@@ -76,7 +76,7 @@ class CreateContract extends Component{
                     <Grid.Row>
                       <Grid.Column>
                         <center>
-                          <Label pointing='below' color='brown' size="medium">Choose Cordinates of your FARM:</Label>
+                          <Label pointing='below' color='red' size="medium">Choose Cordinates of your FARM:</Label>
                         </center>
                       </Grid.Column>
                     </Grid.Row>
@@ -161,7 +161,7 @@ class CreateContract extends Component{
                       <Grid.Column>
                         <center>
                           <Message error header='Sorry there was an error occurred!' content={this.state.errorMessage}/>
-                          <Button loading={this.state.loading} color='brown' size='medium'>CREATE CONTRACT</Button>
+                          <Button loading={this.state.loading} color='red' size='medium'>CREATE CONTRACT</Button>
                         </center>
                       </Grid.Column>
                     </Grid.Row>

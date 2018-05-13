@@ -16,7 +16,7 @@ export default (props) => {
       </Table.Cell>
       <Table.Cell>
         <Link route={`/viewContractOwner/${props.item.address}`}>
-          <a style={{color: '#BD3632'}}>View Contract!</a>
+          <a style={{color: '#BD3632'}}><u>View Contract</u></a>
         </Link>
 
       </Table.Cell>
