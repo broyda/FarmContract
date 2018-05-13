@@ -25,7 +25,8 @@ class InsurerRow extends Component {
                 {this.props.amount} Wei
               </Table.Cell>
               <Table.Cell>
-                <Button primary
+                <Button
+                  color='brown'
                   disabled={!this.props.showCancelButton}
                   onClick={this.cancelBid}
                   loading={this.state.loading}

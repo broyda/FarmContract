@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Menu} from 'semantic-ui-react';
+import {Menu, Dropdown} from 'semantic-ui-react';
 import {Link} from '../routes';
 
 export default () =>{
@@ -12,13 +12,16 @@ export default () =>{
           <a className='item'> Create Contract </a>
         </Link>
 
-        <Link route='/viewContractOwner'>
-          <a className='item'> View Contracts - Owner</a>
-        </Link>
-
-        <Link route='/viewContractInsurer'>
-          <a className='item'> View Contracts - Insurer </a>
-        </Link>
+        <Dropdown item text='View Contracts'>
+             <Dropdown.Menu>
+               <Link route='/contractList'>
+                    <Dropdown.Item>Owner/Customer</Dropdown.Item>
+               </Link>
+               <Link route='/viewContractInsurer'>
+                  <Dropdown.Item>Insurer</Dropdown.Item>
+               </Link>
+             </Dropdown.Menu>
+        </Dropdown>
 
         <Menu.Menu position='right'>
           <Link route='/createContract'>

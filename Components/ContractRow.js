@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Table} from 'semantic-ui-react';
+import {Link} from '../routes';
 
 export default (props) => {
   return(
@@ -14,7 +15,10 @@ export default (props) => {
         {props.item.numberOfBidders}
       </Table.Cell>
       <Table.Cell>
-       Click Here!
+        <Link route={`/viewContractOwner/${props.item.address}`}>
+          <a style={{color: '#BD3632'}}>View Contract!</a>
+        </Link>
+
       </Table.Cell>
     </Table.Row>
   );

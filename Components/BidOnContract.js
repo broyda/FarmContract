@@ -27,7 +27,7 @@ class BidOnContract extends Component{
           labelPosition='right'
         />
         <Button
-          primary
+          color='grey'
           loading={this.state.loading}
           onClick={this.clickOnBidContract}
           floated='right' compact>Bid This Contract

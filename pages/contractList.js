@@ -42,34 +42,36 @@ class ContractList extends Component{
   render(){
     this.fetchContractAddressList();
     return(
-      <Layout>
-        <div style={{marginTop:'15px'}}>
+      <div style={{backgroundColor:'#F2EFE4'}}>
+        <Layout>
+          <div style={{marginTop:'25px'}}/>
           <Divider horizontal>Welcome to Contracts Home page</Divider>
+          <div style={{marginTop:'25px'}}/>
           {this.state.items &&
-            <div style={{marginTop:'25px'}}>
               <Table textAlign='center' size='small' striped compact celled selectable>
                 <Table.Header>
-                  <Table.HeaderCell>
-                    Address
-                  </Table.HeaderCell>
-                  <Table.HeaderCell>
-                    Description
-                  </Table.HeaderCell>
-                  <Table.HeaderCell>
-                    Number of Bidders
-                  </Table.HeaderCell>
-                  <Table.HeaderCell>
-                    Click Here
-                  </Table.HeaderCell>
+                  <Table.Row>
+                    <Table.HeaderCell>
+                      Address
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                      Description
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                      Number of Bidders
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                      Click Here
+                    </Table.HeaderCell>
+                </Table.Row>
                 </Table.Header>
                 <Table.Body>
                   {this.renderContractRow()}
                 </Table.Body>
               </Table>
-            </div>
           }
-        </div>
-      </Layout>
+        </Layout>
+      </div>
     );
   }
 }

@@ -66,20 +66,23 @@ class CreateContract extends Component{
 
   render(){
     return(
-        <div>
+        <div style={{backgroundColor:'#F2EFE4'}}>
           <Layout>
           <Container style={{marginTop:'10px'}}>
             <div>
                 <Form onSubmit={this.createContract} error={!!this.state.errorMessage}>
+                  <div style={{marginTop:'10px'}}/>
                   <Grid>
                     <Grid.Row>
                       <Grid.Column>
-                        <Label pointing='below' color='blue'>Choose Cordinates of your FARM:</Label>
+                        <center>
+                          <Label pointing='below' color='brown' size="medium">Choose Cordinates of your FARM:</Label>
+                        </center>
                       </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
                       <Grid.Column width={4}>
-                          <Label pointing='right' color='teal'>Longitude</Label>
+                          <Label pointing='right' color='grey'>Longitude</Label>
                       </Grid.Column>
                       <Grid.Column width={6}>
                           <Form.Field>
@@ -94,7 +97,7 @@ class CreateContract extends Component{
                     </Grid.Row>
                     <Grid.Row>
                       <Grid.Column width={4}>
-                        <Label color='teal'> Lattitude</Label>
+                        <Label color='grey'> Lattitude</Label>
                       </Grid.Column>
                       <Grid.Column width={6}>
                         <Form.Field>
@@ -156,8 +159,10 @@ class CreateContract extends Component{
                     </Grid.Row>
                     <Grid.Row>
                       <Grid.Column>
-                        <Message error header='Sorry there was an error occurred!' content={this.state.errorMessage}/>
-                        <Button loading={this.state.loading} primary>Create Contract</Button>
+                        <center>
+                          <Message error header='Sorry there was an error occurred!' content={this.state.errorMessage}/>
+                          <Button loading={this.state.loading} color='brown' size='medium'>CREATE CONTRACT</Button>
+                        </center>
                       </Grid.Column>
                     </Grid.Row>
                        <Divider inverted />

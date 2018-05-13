@@ -55,10 +55,9 @@ class ViewContractInsurer extends Component{
           coverageAmtAndContractBalance: `${contractDetails[3]} & 0`,
           listedPrice: contractDetails[4],
           description: contractDetails[5],
-          bidders: contractDetails[6],
-          biddersInfo: biddersInfo
+          bidders: contractDetails[6]
         };
-      return{details: details, address: address, coverageAmount: contractDetails[3]};
+      return{details: details, address: address, coverageAmount: contractDetails[3], biddersInfo: biddersInfo};
     }
   }
 
@@ -104,8 +103,7 @@ retreiveAndUpdateContractDetails = async (address) => {
                     coverageAmtAndContractBalance: `${farmDetails[3]} & ${contractBalance}`,
                     listedPrice: farmDetails[4],
                     description: farmDetails[5],
-                    bidders: numberOfBidders,
-                    biddersInfo: biddersInfo
+                    bidders: numberOfBidders
                     };
     this.setState({
       address: address,
@@ -181,69 +179,73 @@ renderBidderInformation(){
     const {bidderChoosen} = this.state;
     const bidInfoAvailable = bidInfo && bidInfo !== null && typeof bidInfo !== 'undefined' && bidInfo.length > 0;
     return(
-      <Layout>
-        <Grid color='teal'>
-          <Grid.Row>
-            <Grid.Column  width={9}>
-              <Divider horizontal>INSURER PAGE</Divider>
-            </Grid.Column>
-            <Grid.Column width={7} textAlign='right'>
-              <Input
-                value={this.state.searchAddress}
-                onChange={(event) => {this.setState({searchAddress: event.target.value})}}
-                size='medium' placeholder='Enter Contract Address'
-                />
-              <Button primary content='search'
-                loading={this.state.loading}
-                onClick={this.searchContractDetails} floated='right'/>
-            </Grid.Column>
-          </Grid.Row>
-          {!this.state.contractNotFoundMessage &&
+      <div style={{backgroundColor:'#F2EFE4'}}>
+        <Layout>
+          <Grid color='teal'>
             <Grid.Row>
-              <Grid.Column>
-                  <Divider horizontal fitted>Details of {this.state.address}</Divider>
+              <Grid.Column  width={9}>
+                <Divider horizontal>INSURER PAGE</Divider>
+              </Grid.Column>
+              <Grid.Column width={7} textAlign='right'>
+                <Input
+                  value={this.state.searchAddress}
+                  onChange={(event) => {this.setState({searchAddress: event.target.value})}}
+                  size='medium' placeholder='Enter Contract Address'
+                  />
+                <Button content='Search'
+                  icon="search"
+                  color='brown'
+                  loading={this.state.loading}
+                  onClick={this.searchContractDetails} floated='right'/>
               </Grid.Column>
             </Grid.Row>
-          }
-          <Grid.Row>
-            <Grid.Column width={9}>
-              {this.renderContractDetails()}
-            </Grid.Column>
-
             {!this.state.contractNotFoundMessage &&
-              <Grid.Column width={7} floated='right' container='true'>
-                  {!bidderChoosen &&
-                    <BidOnContract bidOnContract={this.bidOnContract} coverageAmount={this.state.coverageAmount}/>
-                  }
-                  {bidderChoosen &&
-                    <div style={{marginTop:'25px'}}>
-                        <Label color="green" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
-                    </div>
-                  }
-                  {!bidderChoosen && bidInfoAvailable &&
-                    <div style={{marginTop:'25px'}}>
-                        <Label color="green" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
-                    </div>
-                  }
-                  {bidInfoAvailable &&
-                          <Table textAlign='center' size='small' striped compact celled selectable color='green'>
-                            <Table.Header>
-                              <Table.Row >
-                                <Table.HeaderCell>Address Of Insurer</Table.HeaderCell>
-                                <Table.HeaderCell>Quote/Premium</Table.HeaderCell>
-                                <Table.HeaderCell>Bid</Table.HeaderCell>
-                              </Table.Row>
-                            </Table.Header>
-                            <Table.Body>
-                              {this.renderBidderInformation()}
-                            </Table.Body>
-                          </Table>
-                   }
+              <Grid.Row>
+                <Grid.Column>
+                    <Divider horizontal fitted>Details of {this.state.address}</Divider>
                 </Grid.Column>
-               }
-          </Grid.Row>
-        </Grid>
-      </Layout>
+              </Grid.Row>
+            }
+            <Grid.Row>
+              <Grid.Column width={9}>
+                {this.renderContractDetails()}
+              </Grid.Column>
+
+              {!this.state.contractNotFoundMessage &&
+                <Grid.Column width={7} floated='right' container='true'>
+                    {!bidderChoosen &&
+                      <BidOnContract bidOnContract={this.bidOnContract} coverageAmount={this.state.coverageAmount}/>
+                    }
+                    {bidderChoosen &&
+                      <div style={{marginTop:'25px'}}>
+                          <Label color="brown" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
+                      </div>
+                    }
+                    {!bidderChoosen && bidInfoAvailable &&
+                      <div style={{marginTop:'25px'}}>
+                          <Label color="brown" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
+                      </div>
+                    }
+                    {bidInfoAvailable &&
+                            <Table textAlign='center' size='small' striped compact celled selectable color='green'>
+                              <Table.Header>
+                                <Table.Row >
+                                  <Table.HeaderCell>Address Of Insurer</Table.HeaderCell>
+                                  <Table.HeaderCell>Quote/Premium</Table.HeaderCell>
+                                  <Table.HeaderCell>Bid</Table.HeaderCell>
+                                </Table.Row>
+                              </Table.Header>
+                              <Table.Body>
+                                {this.renderBidderInformation()}
+                              </Table.Body>
+                            </Table>
+                     }
+                  </Grid.Column>
+                 }
+            </Grid.Row>
+          </Grid>
+        </Layout>
+      </div>
     );
   }
 }
