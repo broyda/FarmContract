@@ -4,9 +4,10 @@ import web3 from '../ethereum/web3';
 import factory from '../ethereum/factory';
 import Layout from '../Components/LayoutComponent';
 import farmFactory from '../ethereum/farmFactory';
-import ContractRow from '../Components/ContractRow';
+import ContractRow from '../Components/ContractOwnerRow';
+import {Link} from '../routes';
 
-class ContractList extends Component{
+class ContractListOwner extends Component{
   constructor(props){
     super(props);
     this.state = {
@@ -46,7 +47,7 @@ class ContractList extends Component{
       <div style={{backgroundColor:'#b2cecf', width:'100%', height:'600px'}}>
         <Layout>
           <div style={{marginTop:'25px'}}/>
-          <Divider horizontal><span style={style}>LIST OF AVAILABLE CONTRACTS</span></Divider>
+          <Divider horizontal><span style={style}>LIST OF AVAILABLE CONTRACTS - OWNER/CUSTOMER</span></Divider>
           <div style={{marginTop:'25px'}}/>
           {this.state.items &&
               <Table textAlign='center' size='small' striped compact celled selectable>
@@ -71,10 +72,25 @@ class ContractList extends Component{
                 </Table.Body>
               </Table>
           }
+
+          {!this.state.items &&
+            <div>
+              <div style={{marginTop:'100px'}}/>
+              <Divider horizontal><span style={style}>Currently No Contracts have been created by you!!!</span></Divider>
+
+                <h4 style={{textAlign:'right'}}>
+                  <Link route='/createContract'>
+                      <a>
+                      <u style={{color:'#222930'}}>CLICK HERE TO CREATE A CONTRACT</u>
+                    </a>
+                  </Link>
+                </h4>
+            </div>
+          }
         </Layout>
       </div>
     );
   }
 }
 
-export default ContractList;
+export default ContractListOwner;

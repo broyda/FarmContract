@@ -3,7 +3,7 @@ import Layout from '../Components/LayoutComponent';
 import web3 from '../ethereum/web3';
 import factory from '../ethereum/factory';
 import {Form, Input, Container, Grid, Button, Label, Card, Divider, Message} from 'semantic-ui-react';
-import {Link} from '../routes';
+import {Link, Router} from '../routes';
 
 class CreateContract extends Component{
   constructor(props){
@@ -27,6 +27,10 @@ class CreateContract extends Component{
 
      const addr = await factory.methods.contractAddressMap(accounts[0]).call();
      this.setState({address: addr, loading: false});
+
+     //We can remove above line and route to list of available contracts page by
+     //un commenting below line of code!!.
+     //Router.pushRoute('/contractListOwner');
    }catch(error){
      console.log(error);
      this.setState({ loading: false, errorMessage:error.message});

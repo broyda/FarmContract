@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.21;
 
 contract OraclizeI {
     address public cbAddress;
@@ -411,15 +411,19 @@ contract FarmContract is usingOraclize{
 }
 
 contract FarmFactoryContract{
-  address[] public contractAddresseArray;
   mapping(address => address[]) public contractListByAddress;
   mapping(address => address) public contractAddressMap;
+  address[] public ownerAddressArray;
 
   function createFarmContract(string _latitude, string _longitude,
     uint _coverageAmount,  uint _listedPrice, string _description) public {
+
         address farmContractAddress = new FarmContract(_latitude, _longitude,
         _coverageAmount, _listedPrice, _description, msg.sender);
-        contractAddresseArray.push(farmContractAddress);
+
+        if(contractAddressMap[msg.sender] == 0){
+             ownerAddressArray.push(msg.sender);
+        }
         contractAddressMap[msg.sender] = farmContractAddress;
         address[] storage contractList = contractListByAddress[msg.sender];
         contractList.push(farmContractAddress);
@@ -427,5 +431,9 @@ contract FarmFactoryContract{
 
     function getContractByAddress(address _address) view public returns(address[]){
         return contractListByAddress[_address];
+    }
+
+      function getContractOwners() view public returns(address[]){
+        return ownerAddressArray;
     }
 }

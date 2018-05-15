@@ -20,16 +20,13 @@ const deploy = async () =>{
   const accounts = await web3.eth.getAccounts();
   const farmContractObj = await new web3.eth.Contract(JSON.parse(interface))
   .deploy({data: bytecode, arguments:[]})
-  .send({from: accounts[0], gas:2000000});
+  .send({from: accounts[0], gas:3000000});
 
   console.log(interface);
   console.log('Contract deployed to -> ', farmContractObj.options.address);
 
   await farmContractObj.methods.createFarmContract("10.1.2",
   "10.2.3", 1200, 300, "NO RAIN for 6 Months").send({from: accounts[0], gas:2000000});
-
-  const adddress = await farmContractObj.methods.contractAddresseArray(0).call();
-  console.log(adddress);
 
   const contractAddress = await farmContractObj.methods.contractAddressMap(accounts[0]).call();
   console.log(contractAddress);

@@ -16,11 +16,11 @@ class Header extends Component{
 
           <Dropdown item text='View Contracts'>
                <Dropdown.Menu>
-                 <Link route='/contractList'>
+                 <Link route='/contractListOwner'>
                       <Dropdown.Item><span style={styleObj}>Owner/Customer</span></Dropdown.Item>
                  </Link>
-                 <Link route='/viewContractInsurer'>
-                    <Dropdown.Item><span style={styleObj}>Insurer</span></Dropdown.Item>
+                 <Link route='/contractListInsurer'>
+                    <Dropdown.Item><span style={styleObj}>Insurer/Bidder</span></Dropdown.Item>
                  </Link>
                </Dropdown.Menu>
           </Dropdown>
