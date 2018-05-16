@@ -11,16 +11,16 @@ class Header extends Component{
             <a className='item'><span style={styleObj}>Home</span></a>
           </Link>
           <Link route='/createContract'>
-            <a className='item'><span style={styleObj}>Create Contract</span></a>
+            <a className='item'><span style={styleObj}>Get Insurance</span></a>
           </Link>
 
-          <Dropdown item text='View Contracts'>
+          <Dropdown item text='View Insurance Contracts'>
                <Dropdown.Menu>
                  <Link route='/contractListOwner'>
-                      <Dropdown.Item><span style={styleObj}>Owner/Customer</span></Dropdown.Item>
+                      <Dropdown.Item><span style={styleObj}>Owned Insurance Contracts</span></Dropdown.Item>
                  </Link>
                  <Link route='/contractListInsurer'>
-                    <Dropdown.Item><span style={styleObj}>Insurer/Bidder</span></Dropdown.Item>
+                    <Dropdown.Item><span style={styleObj}>Privided Insurance Contracts</span></Dropdown.Item>
                  </Link>
                </Dropdown.Menu>
           </Dropdown>

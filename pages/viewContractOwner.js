@@ -50,11 +50,11 @@ class ViewContract extends Component{
                            })
                          );
       }
-
+      const contractBalance = await farmFactoryObj.methods.contractBalance().call();
       const details ={
           owner: contractDetails[0],
           coordinates: `Lattitide - ${contractDetails[1]} & Langitude - ${contractDetails[2]}`,
-          coverageAmtAndContractBalance: `${contractDetails[3]} & 0`,
+          coverageAmtAndContractBalance: `${contractDetails[3]} & ${contractBalance}`,
           listedPrice: contractDetails[4],
           description: contractDetails[5],
           bidders: contractDetails[6]
@@ -207,7 +207,7 @@ transferContract = async (address) => {
                     />
                   <Button content='Search'
                     icon="search"
-                    color='red'
+                    color='vk'
                     loading={this.state.seachLoading}
                     onClick={this.searchContractDetails} floated='right'/>
                 </Grid.Column>
@@ -270,10 +270,11 @@ transferContract = async (address) => {
                         labelPosition='right'
                       />
                       <Button
-                        color = 'red'
+                        color = 'vk'
                         floated='right'
                         loading={this.state.transferButtonLoading}
-                        disabled={true}
+                        disabled={false}
+                        onClick={() => this.transferContract(this.state.transferAddress)}
                        >Transfer Contract</Button>
                    </div>
                   </Grid.Column>

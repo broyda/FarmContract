@@ -45,7 +45,8 @@ class ViewContractInsurer extends Component{
            const bidderAddress = await farmFactoryObj.methods.biddersAddressArray(index).call();
            const amount = await farmFactoryObj.methods.listOfBidders(bidderAddress).call();
            const bidder = await farmFactoryObj.methods.insurer().call();
-           return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: false});
+           return({bidderAddress: bidderAddress, amount: amount, bidderChoosen: false,
+              showCancelButton: !bidderChoosen});
          })
        );
       }
@@ -196,7 +197,7 @@ renderBidderInformation(){
                 <Button
                   content='Search'
                   icon="search"
-                  color='red'
+                  color='vk'
                   size='medium'
                   loading={this.state.loading}
                   onClick={this.searchContractDetails} floated='right'/>
@@ -224,12 +225,12 @@ renderBidderInformation(){
                     }
                     {bidderChoosen &&
                       <div style={{marginTop:'25px'}}>
-                          <Label color="red" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
+                          <Label color="orange" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
                       </div>
                     }
                     {!bidderChoosen && bidInfoAvailable &&
                       <div style={{marginTop:'25px'}}>
-                          <Label color="red" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
+                          <Label color="orange" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
                       </div>
                     }
                     {bidInfoAvailable &&

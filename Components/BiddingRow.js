@@ -30,7 +30,7 @@ onClickOfChooseBidder = async () => {
                 size='small'
                 loading={this.state.chooseBidderSpinner}
                 onClick={this.onClickOfChooseBidder}
-                color = 'red'
+                color = 'vk'
               >Choose</Button>
             </Table.Cell>
           }
