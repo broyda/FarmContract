@@ -9,11 +9,18 @@ class CreateContract extends Component{
   constructor(props){
       super(props);
       this.state ={
-              longitude:'',lattitude:'',
-              coverageAmount:'',listedPrice:'',
+              longitude:'',
+              lattitude:'',
+              coverageAmount:'',
+              listedPrice:'',
               description:'',
-              loading: false,address:'', errorMessage:''
+              loading: false,address:'',
+               errorMessage:''
             };
+  }
+
+  componentDidMount(){
+    this.loadGeoMap();
   }
 
  createContract = async (event) =>{
@@ -22,12 +29,11 @@ class CreateContract extends Component{
    try{
      const {longitude, lattitude, coverageAmount,listedPrice, description} = this.state;
      const accounts = await web3.eth.getAccounts();
-     await factory.methods.createFarmContract(lattitude,longitude, coverageAmount,
+     await factory.methods.createFarmContract(lattitude + '',longitude +'', coverageAmount,
      listedPrice, description).send({from: accounts[0]});
 
      const addr = await factory.methods.contractAddressMap(accounts[0]).call();
      this.setState({address: addr, loading: false});
-
      //We can remove above line and route to list of available contracts page by
      //un commenting below line of code!!.
      //Router.pushRoute('/contractListOwner');
@@ -53,7 +59,7 @@ class CreateContract extends Component{
     }
   }
 
-  loadGeoMap(){
+  loadGeoMap = () => {
       var mapOptions = {
                  center: new google.maps.LatLng(41.8781, -87.6298),
                  zoom: 10,
@@ -62,15 +68,18 @@ class CreateContract extends Component{
              var infoWindow = new google.maps.InfoWindow();
              var latlngbounds = new google.maps.LatLngBounds();
              var map = new google.maps.Map(document.getElementById("geoMap"), mapOptions);
-  }
-  selectCordinates = (event) =>{
-    event.preventDefault();
-    console.log(event.target.type);
-  }
+
+             map.addListener('click', (function(event) {
+                  this.setState({
+                    lattitude:event.latLng.lat(),
+                    longitude: event.latLng.lng()
+                  });
+                }).bind(this));
+}
 
   render(){
     return(
-        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'600px'}}>
+        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'618px'}}>
           <Layout>
           <Container style={{marginTop:'10px'}}>
             <div>
@@ -80,41 +89,21 @@ class CreateContract extends Component{
                     <Grid.Row>
                       <Grid.Column>
                         <center>
-                          <Label pointing='below' color='red' size="medium">Choose Cordinates of your FARM:</Label>
+                          <Label pointing='below' color='red' size="medium">Choose Location of your FARM:</Label>
                         </center>
                       </Grid.Column>
                     </Grid.Row>
+
                     <Grid.Row>
-                      <Grid.Column width={4}>
-                          <Label pointing='right' color='grey'>Longitude</Label>
+                      <Grid.Column width={3}>
                       </Grid.Column>
-                      <Grid.Column width={6}>
-                          <Form.Field>
-                            <Input
-                             value={this.state.longitude}
-                             label='Coardinates'
-                             labelPosition='right'
-                             onChange={(event) => this.setState({longitude: event.target.value})}
-                            />
-                          </Form.Field>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                      <Grid.Column width={4}>
-                        <Label color='grey'> Lattitude</Label>
-                      </Grid.Column>
-                      <Grid.Column width={6}>
-                        <Form.Field>
-                          <Input
-                            value={this.state.lattitude}
-                            label='Coardinates'
-                            labelPosition='right'
-                            onChange={(event) => this.setState({lattitude: event.target.value})}
+                      <Grid.Column width={7}>
+                        <div
+                          id="geoMap"
+                          style={{width: '650px', height: '180px'}}
                           />
-                        </Form.Field>
                       </Grid.Column>
                     </Grid.Row>
-                       <Divider inverted />
                     <Grid.Row>
                       <Grid.Column width={4}>
                         <Label pointing='right' color='grey'>Coverage Amount</Label>
@@ -165,11 +154,10 @@ class CreateContract extends Component{
                       <Grid.Column>
                         <center>
                           <Message error header='Sorry there was an error occurred!' content={this.state.errorMessage}/>
-                          <Button loading={this.state.loading} color='red' size='medium'>CREATE CONTRACT</Button>
+                          <Button loading={this.state.loading} color='red' size='small'>CREATE CONTRACT</Button>
                         </center>
                       </Grid.Column>
                     </Grid.Row>
-                       <Divider inverted />
                     <Grid.Row>
                       <Grid.Column>
                         {this.loadCreatedContract()}
