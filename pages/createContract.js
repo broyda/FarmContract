@@ -23,6 +23,10 @@ class CreateContract extends Component{
     this.loadGeoMap();
   }
 
+  componentDidUpdate(){
+    this.loadGeoMap();
+  }
+
  createContract = async (event) =>{
    this.setState({loading: true, errorMessage:''});
    event.preventDefault();
@@ -50,8 +54,8 @@ class CreateContract extends Component{
           <h4>Contract Created successfully!!!! {this.state.address}
             <Link route={`/viewContractOwner/${this.state.address}`}>
                 <a>
-                <Label color='blue' pointing='left' size='tiny'> View Contract Details here</Label>
-              </a>
+                  <Label color='blue' pointing='left' size='tiny'> VIEW DETAILS HERE</Label>
+                </a>
             </Link>
           </h4>
       </div>
@@ -79,31 +83,36 @@ class CreateContract extends Component{
 
   render(){
     return(
-        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'618px'}}>
+        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'680px'}}>
           <Layout>
           <Container style={{marginTop:'10px'}}>
             <div>
                 <Form onSubmit={this.createContract} error={!!this.state.errorMessage}>
-                  <div style={{marginTop:'10px'}}/>
-                  <Grid>
+                  <Grid stackable container>
                     <Grid.Row>
-                      <Grid.Column>
-                        <center>
+                      <Grid.Column textAlign='center'>
                           <Label pointing='below' color='red' size="medium">Choose Location of your FARM:</Label>
-                        </center>
                       </Grid.Column>
                     </Grid.Row>
 
                     <Grid.Row>
-                      <Grid.Column width={3}>
-                      </Grid.Column>
+                      <Grid.Column width={3}/>
                       <Grid.Column width={7}>
                         <div
                           id="geoMap"
-                          style={{width: '650px', height: '180px'}}
+                          style={{width: '650px', height: '200px'}}
                           />
                       </Grid.Column>
                     </Grid.Row>
+
+                    { this.state.lattitude && this.state.longitude &&
+                      <Grid.Row>
+                        <Grid.Column textAlign='center'>
+                          <Label color='grey'>Choosen Lattitude and Longitude values are <u> {this.state.lattitude} , {this.state.longitude} </u></Label>
+                        </Grid.Column>
+                      </Grid.Row>
+                    }
+
                     <Grid.Row>
                       <Grid.Column width={4}>
                         <Label pointing='right' color='grey'>Coverage Amount</Label>
@@ -151,11 +160,9 @@ class CreateContract extends Component{
                     </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
-                      <Grid.Column>
-                        <center>
+                      <Grid.Column textAlign='center'>
                           <Message error header='Sorry there was an error occurred!' content={this.state.errorMessage}/>
                           <Button loading={this.state.loading} color='red' size='small'>CREATE CONTRACT</Button>
-                        </center>
                       </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
