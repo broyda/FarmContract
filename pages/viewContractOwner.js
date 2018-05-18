@@ -120,19 +120,6 @@ retreiveAndUpdateContractDetails = async (address) => {
   }
 };
 
-bidOnContract = async (amount) => {
-    if(amount !== '' && amount > 0 ){
-      try{
-        const accounts = await web3.eth.getAccounts();
-        const contractObj = farmFactory(this.state.address);
-        await contractObj.methods.bid(amount).send({from: accounts[0]});
-        this.retreiveAndUpdateContractDetails(this.state.address);
-      }catch(error){
-        console.log(error);
-      }
-    }
-  }
-
 chooseBidder = async (address, amount) => {
       try{
         const accounts = await web3.eth.getAccounts();

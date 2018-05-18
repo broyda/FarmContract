@@ -15,7 +15,7 @@ class DisplayContractDetails extends Component{
       {
         header: coordinates,
         meta:'Coardinates',
-        description: 'Farm Lattitude and Longitude information',
+        description: 'Farm Geographical Location information',
         style: {overflowWrap: 'break-word'}
       },
         {

@@ -24,43 +24,43 @@ class CreateContract extends Component{
   }
 
   componentDidUpdate(){
-    this.loadGeoMap();
+      //this.loadGeoMap();
   }
 
  createContract = async (event) =>{
-   this.setState({loading: true, errorMessage:''});
-   event.preventDefault();
-   try{
-     const {longitude, lattitude, coverageAmount,listedPrice, description} = this.state;
-     const accounts = await web3.eth.getAccounts();
-     await factory.methods.createFarmContract(lattitude + '',longitude +'', coverageAmount,
-     listedPrice, description).send({from: accounts[0]});
+  const {longitude, lattitude, coverageAmount,listedPrice, description} = this.state;
+   if(longitude && lattitude && coverageAmount && listedPrice && description){
+     this.setState({loading: true, errorMessage:''});
+     event.preventDefault();
+     try{
+       const accounts = await web3.eth.getAccounts();
+       await factory.methods.createFarmContract(lattitude + '',longitude +'', coverageAmount,
+       listedPrice, description).send({from: accounts[0]});
 
-     const addr = await factory.methods.contractAddressMap(accounts[0]).call();
-     this.setState({address: addr, loading: false});
-     //We can remove above line and route to list of available contracts page by
-     //un commenting below line of code!!.
-     //Router.pushRoute('/contractListOwner');
-   }catch(error){
-     console.log(error);
-     this.setState({ loading: false, errorMessage:error.message});
+       const addr = await factory.methods.contractAddressMap(accounts[0]).call();
+       this.setState({address: addr, loading: false});
+       //We can remove above line and route to list of available contracts page by
+       //un commenting below line of code!!.
+       //Router.pushRoute('/contractListOwner');
+     }catch(error){
+       console.log(error);
+       this.setState({ loading: false, errorMessage:error.message});
+     }
+   }else{
+     this.setState({errorMessage: 'Missing Required Information. Please verify it.'});
    }
   }
 
   loadCreatedContract = () =>{
-    if(this.state.address){
-      return (
+    return (
       <div>
-          <h4>Contract Created successfully!!!! {this.state.address}
             <Link route={`/viewContractOwner/${this.state.address}`}>
                 <a>
-                  <Label color='blue' pointing='left' size='tiny'> VIEW DETAILS HERE</Label>
+                  <Label color='grey' size='medium'> Contract Created successfully. {this.state.address} <u>VIEW DETAILS HERE</u></Label>
                 </a>
             </Link>
-          </h4>
       </div>
       );
-    }
   }
 
   loadGeoMap = () => {
@@ -83,20 +83,16 @@ class CreateContract extends Component{
 
   render(){
     return(
-        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'680px'}}>
+        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'630px'}}>
           <Layout>
           <Container style={{marginTop:'10px'}}>
             <div>
                 <Form onSubmit={this.createContract} error={!!this.state.errorMessage}>
                   <Grid stackable container>
                     <Grid.Row>
-                      <Grid.Column textAlign='center'>
-                          <Label pointing='below' color='red' size="medium">Choose Location of your FARM:</Label>
-                      </Grid.Column>
-                    </Grid.Row>
-
-                    <Grid.Row>
-                      <Grid.Column width={3}/>
+                    <Grid.Column textAlign='center' width={3} verticalAlign='middle'>
+                        <Label pointing='right' color='orange' size="medium">Choose Location of your FARM:</Label>
+                    </Grid.Column>
                       <Grid.Column width={7}>
                         <div
                           id="geoMap"
@@ -108,7 +104,7 @@ class CreateContract extends Component{
                     { this.state.lattitude && this.state.longitude &&
                       <Grid.Row>
                         <Grid.Column textAlign='center'>
-                          <Label color='grey'>Choosen Lattitude and Longitude values are <u> {this.state.lattitude} , {this.state.longitude} </u></Label>
+                          <Label color='orange'>Choosen Lattitude and Longitude values are <u> {this.state.lattitude} , {this.state.longitude} </u></Label>
                         </Grid.Column>
                       </Grid.Row>
                     }
@@ -159,15 +155,17 @@ class CreateContract extends Component{
                         </Form.Field>
                     </Grid.Column>
                     </Grid.Row>
+                    { this.state.address &&
+                      <Grid.Row>
+                        <Grid.Column textAlign='center'>
+                          {this.loadCreatedContract()}
+                        </Grid.Column>
+                      </Grid.Row>
+                     }
                     <Grid.Row>
                       <Grid.Column textAlign='center'>
                           <Message error header='Sorry there was an error occurred!' content={this.state.errorMessage}/>
-                          <Button loading={this.state.loading} color='red' size='small'>CREATE CONTRACT</Button>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                      <Grid.Column>
-                        {this.loadCreatedContract()}
+                          <Button loading={this.state.loading}  size='small' color='orange'>CREATE CONTRACT</Button>
                       </Grid.Column>
                     </Grid.Row>
                   </Grid>

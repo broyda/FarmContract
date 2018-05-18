@@ -20,7 +20,7 @@ class Header extends Component{
                       <Dropdown.Item><span style={styleObj}>Owned Insurance Contracts</span></Dropdown.Item>
                  </Link>
                  <Link route='/contractListInsurer'>
-                    <Dropdown.Item><span style={styleObj}>Privided Insurance Contracts</span></Dropdown.Item>
+                    <Dropdown.Item><span style={styleObj}>Underwritten Insurance Contracts</span></Dropdown.Item>
                  </Link>
                </Dropdown.Menu>
           </Dropdown>

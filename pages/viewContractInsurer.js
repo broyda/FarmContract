@@ -50,10 +50,11 @@ class ViewContractInsurer extends Component{
          })
        );
       }
+    const contractBalance = await farmFactoryObj.methods.contractBalance().call();
     const details ={
           owner: contractDetails[0],
           coordinates: `Lattitide - ${contractDetails[1]} & Langitude - ${contractDetails[2]}`,
-          coverageAmtAndContractBalance: `${contractDetails[3]} & 0`,
+          coverageAmtAndContractBalance: `${contractDetails[3]} & ${contractBalance}`,
           listedPrice: contractDetails[4],
           description: contractDetails[5],
           bidders: contractDetails[6]
