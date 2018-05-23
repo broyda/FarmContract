@@ -13,7 +13,7 @@ class Layout extends Component{
             href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css">
             </link>
             <script type="text/javascript"
-                src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCyg4Fk3yo2u4VSgH3Y51AFWR8SlDofeio&sensor=false">
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyg4Fk3yo2u4VSgH3Y51AFWR8SlDofeio&sensor=false">
             </script>
           </Head>
           <div style={{marginTop:'15px'}}>
