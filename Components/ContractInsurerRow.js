@@ -6,10 +6,10 @@ export default (props) => {
   return(
     <Table.Row>
       <Table.Cell>
-        {props.item.address}
+        {props.item.description}
       </Table.Cell>
       <Table.Cell>
-        {props.item.description}
+        {props.item.address}
       </Table.Cell>
       <Table.Cell>
         {props.item.coverageAmount}

@@ -7,43 +7,37 @@ class DisplayContractDetails extends Component{
        bidders, contractBalance} = this.props.contractDetails;
     const items = [
       {
-        header: owner,
-        meta:'Owner',
-        description: 'Owner of the Contract!',
+        header: 'Address of Owner',
+        description: owner,
         style: {overflowWrap: 'break-word'}
       },
       {
-        header: coordinates,
-        meta:'Coardinates',
-        description: 'Farm Geographical Location information',
+        header: 'Geographical Information',
+        description:coordinates ,
         style: {overflowWrap: 'break-word'}
       },
         {
-          header: coverageAmtAndContractBalance,
-          meta:'Coverage Amount And Balance',
-          description: 'Contracts Coverage amount and Balance respectively in wei',
+          header: 'Coverage Amount And Balance',
+          description: `${coverageAmtAndContractBalance} Wei`,
           style: {overflowWrap: 'break-word'}
         },
         {
-          header: listedPrice,
-          meta:'Listed price in wei',
-          description: 'Price ready to be Paid by Contract Owner',
+          header: 'Listed Price',
+          description: `${listedPrice} Wei`,
           style: {overflowWrap: 'break-word'}
         },
         {
-          header: description,
-          meta:'Contract Information',
-          description: 'Breif Description of the Contract',
+          header: 'Contracts Address',
+          description: description,
           style: {overflowWrap: 'break-word'}
         },
         {
-          header: bidders,
-          meta:'Bidders',
-          description: 'Number of Bidders on this Contract',
+          header: 'Number of Bidders',
+          description: bidders,
           style: {overflowWrap: 'break-word'}
         }
   ]
-    return(<Card.Group items={items} />);
+    return(<Card.Group items={items}/>);
   }
 }
 

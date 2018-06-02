@@ -182,7 +182,7 @@ renderBidderInformation(){
     const bidInfoAvailable = bidInfo && bidInfo !== null && typeof bidInfo !== 'undefined' && bidInfo.length > 0;
     const colorProp = {color:'#EB593C'};
     return(
-      <div style={{backgroundColor:'#b2cecf', width:'100%', height:'610px'}}>
+      <div style={{backgroundColor:'#b2cecf', width:'100%', height:'635px'}}>
         <Layout>
           <Grid color='teal'>
             <Grid.Row>

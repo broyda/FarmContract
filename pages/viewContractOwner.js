@@ -179,95 +179,116 @@ transferContract = async (address) => {
     const style = {color:'#d02552', fontWeight: 'bolder'};
     const colorProp = {color:'#EB593C'};
     return(
-        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'610px'}}>
+        <div style={{backgroundColor:'#F6F6F6', width:'100%', height:'635px'}}>
           <Layout>
-            <Grid color='teal'>
+            <Grid color='teal' divided='vertically'>
               <Grid.Row>
-                <Grid.Column  width={9}>
-                  <Divider horizontal><span style={style}>CONTRACT OWNER PAGE</span></Divider>
-                </Grid.Column>
-                <Grid.Column width={7} textAlign='right'>
+                <Grid.Column  width={6}/>
+                <Grid.Column width={10} textAlign='right'>
                   <Input
                     value={this.state.searchAddress}
                     onChange={(event) => {this.setState({searchAddress: event.target.value})}}
-                    size='medium' placeholder='Enter Contract Address'
+                    size='medium' placeholder='Enter Contract Address' focus
                     />
                   <Button content='Search'
                     icon="search"
-                    color='vk'
+                    color='orange'
                     loading={this.state.seachLoading}
                     onClick={this.searchContractDetails} floated='right'/>
                 </Grid.Column>
               </Grid.Row>
-              {!contractNotFoundMessage &&
-                <Grid.Row>
-                  <Grid.Column>
-                      <Divider horizontal fitted>
-                        <span style={style}>Details of {this.state.address}</span>
-                    </Divider>
-                  </Grid.Column>
-                </Grid.Row>
-              }
+            </Grid>
+
+            {!contractNotFoundMessage &&
+              <center style={{marginBottom:'15px',marginTop:'5px'}}>
+                <Label pointing='below' color="grey" size='medium'>
+                  CONTRACT OWNER: Details OF {this.state.contractDetails.description} CONTRACT
+                </Label>
+              </center>
+            }
+            <Grid>
               <Grid.Row>
-                <Grid.Column width={9}>
+                <Grid.Column>
                   {this.renderContractDetails()}
                 </Grid.Column>
-
-                {!contractNotFoundMessage &&
-                    <Grid.Column width={7} floated='right' container='true'>
-                    {!bidderChoosen && bidderInfoAvailable &&
-                      <center style={{marginBottom:'10px'}}><Label pointing='below' color="teal" size='medium'>
-                          Insurers/Bidders Information</Label>
-                      </center>
-                    }
-
-                    {bidderChoosen &&
-                        <Label color="grey" pointing='below' size='tiny' color="green">Following Insurer has been choosen.</Label>
-                    }
-
-                    {bidderInfoAvailable &&
-                      <Table textAlign='center' size='small' striped compact celled selectable>
-                        <Table.Header>
-                          <Table.Row>
-                            <Table.HeaderCell>
-                              <span style={colorProp}>Address Of Bidder</span>
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                              <span style={colorProp}>Quote/Premium</span>
-                            </Table.HeaderCell>
-                            {!bidderChoosen &&
-                              <Table.HeaderCell>
-                                <span style={colorProp}>Choose Bidder</span>
-                              </Table.HeaderCell>
-                             }
-                          </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {this.renderBidderInformation()}
-                        </Table.Body>
-                      </Table>
-                    }
-                    <Divider/>
-                    <div style={{marginTop:'25px'}}>
-                      <Input
-                        value={this.state.transferAddress}
-                        onChange={(event) => this.setState({transferAddress: event.target.value})}
-                        placeholder='Address to be Transferred'
-                        label='Address'
-                        labelPosition='right'
-                      />
-                      <Button
-                        color = 'vk'
-                        floated='right'
-                        loading={this.state.transferButtonLoading}
-                        disabled={false}
-                        onClick={() => this.transferContract(this.state.transferAddress)}
-                       >Transfer Contract</Button>
-                   </div>
-                  </Grid.Column>
-                   }
               </Grid.Row>
             </Grid>
+              {!contractNotFoundMessage &&
+                <div>
+                    <Grid>
+                    <Grid.Row>
+                      <Grid.Column container='true'>
+                      {!bidderChoosen && bidderInfoAvailable &&
+                        <center style={{marginBottom:'2px', marginTop:'4px'}}><Label pointing='below' color="grey" size='medium'>
+                            Insurers/Bidders Information</Label>
+                        </center>
+                      }
+
+                      {bidderChoosen &&
+                        <div style={{marginBottom:'2px', marginTop:'4px'}}>
+                          <Label color="grey" pointing='below' size='tiny' color="grey">Following Insurer has been choosen.</Label>
+                        </div>
+                      }
+
+                      {bidderInfoAvailable &&
+                        <div>
+                          <Table textAlign='center' size='small' striped compact celled selectable>
+                            <Table.Header>
+                              <Table.Row>
+                                <Table.HeaderCell>
+                                  <span style={colorProp}>Address Of Bidder</span>
+                                </Table.HeaderCell>
+                                <Table.HeaderCell>
+                                  <span style={colorProp}>Quote/Premium</span>
+                                </Table.HeaderCell>
+                                {!bidderChoosen &&
+                                  <Table.HeaderCell>
+                                    <span style={colorProp}>Choose Bidder</span>
+                                  </Table.HeaderCell>
+                                 }
+                              </Table.Row>
+                            </Table.Header>
+                            <Table.Body>
+                                {this.renderBidderInformation()}
+                            </Table.Body>
+                          </Table>
+                        </div>
+                      }
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  <Grid.Row>
+                    <Grid.Column width={4}/>
+                    <Grid.Column width={7} textAlign='right'>
+                      {!bidderChoosen &&
+                        <center style={{marginBottom:'2px'}}><Label pointing='below' color="grey" size='medium'>
+                            Tranfer Contract</Label>
+                        </center>
+                      }
+                        <Input
+                          value={this.state.transferAddress}
+                          onChange={(event) => this.setState({transferAddress: event.target.value})}
+                          placeholder='Address to be Transferred'
+                          label='Address'
+                          labelPosition='right'
+                        />
+                        <Button
+                          color = 'orange'
+                          floated='right'
+                          loading={this.state.transferButtonLoading}
+                          disabled={false}
+                          onClick={() => this.transferContract(this.state.transferAddress)}
+                         >Transfer Contract</Button>
+                    </Grid.Column>
+                  </Grid.Row>
+
+                  </Grid>
+
+                  <Grid>
+
+                  </Grid>
+                </div>
+                }
           </Layout>
         </div>
     );

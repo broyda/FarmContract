@@ -44,20 +44,20 @@ class ContractListOwner extends Component{
     const style = {color:'#d02552', fontWeight: 'bolder'};
     this.fetchContractAddressList();
     return(
-      <div style={{backgroundColor:'#b2cecf', width:'100%', height:'600px'}}>
+      <div style={{backgroundColor:'#F6F6F6', width:'100%', height:'635px'}}>
         <Layout>
           <div style={{marginTop:'25px'}}/>
-          <Divider horizontal><span style={style}>LIST OF AVAILABLE CONTRACTS - OWNER/CUSTOMER</span></Divider>
-          <div style={{marginTop:'25px'}}/>
+          <Divider horizontal><span style={style}>My CONTRACT's DETAILS</span></Divider>
+          <div style={{marginTop:'50px'}}/>
           {this.state.items &&
-              <Table textAlign='center' size='small' striped compact celled selectable>
+              <Table textAlign='center' size='medium' striped compact celled selectable>
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>
-                      <span style={style}>Address</span>
+                      <span style={style}>Description</span>
                     </Table.HeaderCell>
                     <Table.HeaderCell>
-                      <span style={style}>Description</span>
+                      <span style={style}>Address</span>
                     </Table.HeaderCell>
                     <Table.HeaderCell>
                       <span style={style}>Number of Bidders</span>

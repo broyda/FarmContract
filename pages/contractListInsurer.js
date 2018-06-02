@@ -63,20 +63,20 @@ class ContractListInsurer extends Component{
     const style = {color:'#d02552', fontWeight: 'bolder'};
     this.fetchContractAddressList();
     return(
-      <div style={{backgroundColor:'#b2cecf', width:'100%', height:'600px'}}>
+      <div style={{backgroundColor:'#b2cecf', width:'100%', height:'635px'}}>
         <Layout>
           <div style={{marginTop:'25px'}}/>
-          <Divider horizontal><span style={style}>LIST OF AVAILABLE CONTRACTS- INSURER</span></Divider>
-          <div style={{marginTop:'25px'}}/>
+          <Divider horizontal><span style={style}>AVAILABLE CONTRACTS FOR BIDDING</span></Divider>
+          <div style={{marginTop:'50px'}}/>
           {this.state.items &&
-              <Table textAlign='center' size='small' striped compact celled selectable>
+              <Table textAlign='center' size='medium' striped compact celled selectable>
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>
-                      <span style={style}>Address</span>
+                      <span style={style}>Description</span>
                     </Table.HeaderCell>
                     <Table.HeaderCell>
-                      <span style={style}>Description</span>
+                      <span style={style}>Address</span>
                     </Table.HeaderCell>
                     <Table.HeaderCell>
                       <span style={style}>Coverage Amount</span>

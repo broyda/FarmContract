@@ -16,7 +16,7 @@ class Layout extends Component{
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyg4Fk3yo2u4VSgH3Y51AFWR8SlDofeio&sensor=false">
             </script>
           </Head>
-          <div style={{marginTop:'15px'}}>
+          <div >
               <Header/>
               {this.props.children}
           </div>
