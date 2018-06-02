@@ -85,7 +85,7 @@ class CreateContract extends Component{
 
   render(){
     return(
-        <div style={{backgroundColor:'#b2cecf', width:'100%', height:'635px'}}>
+        <div style={{backgroundColor:'#FFE361', width:'100%', height:'635px'}}>
           <Layout>
           <Container style={{marginTop:'10px'}}>
             <div>

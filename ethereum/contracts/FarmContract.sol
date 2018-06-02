@@ -328,7 +328,7 @@ contract FarmContract is usingOraclize{
         insurer = _bidderAddress;
         insurer.transfer(listOfBidders[_bidderAddress]);
 
-       for(uint i = 0; i<numberOfBidders; i++){
+       for(uint i = 0; i< numberOfBidders; i++){
            address bidderAddress = biddersAddressArray[i];
            if(bidderAddress != _bidderAddress){
                delete listOfBidders[bidderAddress];

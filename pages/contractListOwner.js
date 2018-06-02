@@ -50,7 +50,7 @@ class ContractListOwner extends Component{
           <Divider horizontal><span style={style}>My CONTRACT's DETAILS</span></Divider>
           <div style={{marginTop:'50px'}}/>
           {this.state.items &&
-              <Table textAlign='center' size='medium' striped compact celled selectable>
+              <Table textAlign='center' size='large' striped compact celled selectable>
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>

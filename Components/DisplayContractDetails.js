@@ -28,7 +28,7 @@ class DisplayContractDetails extends Component{
         },
         {
           header: 'Contracts Address',
-          description: description,
+          description: this.props.contractAddress,
           style: {overflowWrap: 'break-word'}
         },
         {

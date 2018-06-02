@@ -18,7 +18,8 @@ class ViewContractInsurer extends Component{
       searchLoading: false,
       contractNotFoundMessage:this.props.contractNotFoundMessage,
       biddersInfo: this.props.biddersInfo,
-      bidderChoosen: this.props.bidderChoosen
+      bidderChoosen: this.props.bidderChoosen,
+      accountBalance:''
     }
 }
   static async getInitialProps(props){
@@ -75,7 +76,6 @@ class ViewContractInsurer extends Component{
 retreiveAndUpdateContractDetails = async (address) => {
   try{
     const accounts = await web3.eth.getAccounts();
-    console.log(accounts[0]);
     const searchFarmObj = await farmFactory(address);
     const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
     const numberOfBidders = farmDetails[6];
@@ -163,7 +163,7 @@ renderBidderInformation(){
 
   renderContractDetails(){
     if(!this.state.contractNotFoundMessage){
-      return <DisplayContractDetails contractDetails={this.state.contractDetails}/>
+      return <DisplayContractDetails contractDetails={this.state.contractDetails} contractAddress={this.state.address}/>
     }else{
       return(
             <Message negative>
@@ -178,18 +178,32 @@ renderBidderInformation(){
     }
   }
 
+  componentDidMount(){
+    this.getAccountBalance();
+  }
+
+  getAccountBalance = async () => {
+    const accounts = await web3.eth.getAccounts();
+    const balance = await web3.eth.getBalance(accounts[0]);
+    const amountInEther = await web3.utils.fromWei(balance, 'ether');
+    this.setState({accountBalance: amountInEther});
+  }
+
   render(){
     const bidInfo = this.state.biddersInfo;
     const {bidderChoosen} = this.state;
     const bidInfoAvailable = bidInfo && bidInfo !== null && typeof bidInfo !== 'undefined' && bidInfo.length > 0;
     const colorProp = {color:'#EB593C'};
     const colSize = bidderChoosen ? 10 : 7;
+
     return(
-      <div style={{backgroundColor:'#b2cecf', width:'100%', height:'635px'}}>
+      <div style={{backgroundColor:'#EDEDE4', width:'100%', height:'700px'}}>
         <Layout>
-          <Grid color='teal'>
+          <Grid celled padded>
             <Grid.Row>
-              <Grid.Column  width={9}/>
+                <Grid.Column  width={9}>
+                  <Label color='brown'>Your Account Balance is {this.state.accountBalance} ether</Label>
+                </Grid.Column>
               <Grid.Column width={7} textAlign='right'>
                 <Input
                   value={this.state.searchAddress}
@@ -199,7 +213,7 @@ renderBidderInformation(){
                 <Button
                   content='Search'
                   icon="search"
-                  color='youtube'
+                  color='brown'
                   size='medium'
                   loading={this.state.loading}
                   onClick={this.searchContractDetails} floated='right'/>
@@ -208,21 +222,21 @@ renderBidderInformation(){
           </Grid>
 
             {!this.state.contractNotFoundMessage &&
-              <center style={{marginTop:'2px', marginBottom:'2px'}}>
-                <Label pointing='below' color='red'>
-                  INSURER/BIDDER PAGE: Details Of {this.state.contractDetails.description}
+              <center style={{marginTop:'15px'}}>
+                <Label pointing='below' color='brown'>
+                  Insurer Page: Details Of {this.state.contractDetails.description} CONTRACT
                 </Label>
               </center>
             }
-
-          <Grid>
-            <Grid.Row>
-              <Grid.Column>
-                {this.renderContractDetails()}
-              </Grid.Column>
-            </Grid.Row>
-            <Divider/>
-          </Grid>
+          <div style={{backgroundColor:'#FFFFFF'}}>
+            <Grid celled>
+              <Grid.Row>
+                <Grid.Column>
+                  {this.renderContractDetails()}
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </div>
 
           {!this.state.contractNotFoundMessage &&
             <div>
@@ -237,7 +251,7 @@ renderBidderInformation(){
                 <Grid.Column width={colSize} container='true'>
                   {bidderChoosen &&
                       <div>
-                        <Label color="red" pointing='below' size='small'>
+                        <Label color="brown" pointing='below' size='medium'>
                           Following Insurer has been choosen by Contract Owner
                         </Label>
                       </div>
@@ -245,7 +259,7 @@ renderBidderInformation(){
 
                   {!bidderChoosen &&
                       <div>
-                        <Label color="red" pointing='below' size='small'>
+                        <Label color="brown" pointing='below' size='medium'>
                           Following Quotes are provided by different Insurer!!
                         </Label>
                       </div>

@@ -63,13 +63,13 @@ class ContractListInsurer extends Component{
     const style = {color:'#d02552', fontWeight: 'bolder'};
     this.fetchContractAddressList();
     return(
-      <div style={{backgroundColor:'#b2cecf', width:'100%', height:'635px'}}>
+      <div style={{backgroundColor:'#EDEDE4', width:'100%', height:'635px'}}>
         <Layout>
           <div style={{marginTop:'25px'}}/>
           <Divider horizontal><span style={style}>AVAILABLE CONTRACTS FOR BIDDING</span></Divider>
           <div style={{marginTop:'50px'}}/>
           {this.state.items &&
-              <Table textAlign='center' striped compact celled selectable>
+              <Table textAlign='center' size='large' striped compact celled selectable>
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>
