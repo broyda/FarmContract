@@ -32,10 +32,9 @@ class BidOnContract extends Component{
           onClick={this.clickOnBidContract}
           floated='right' compact>Bid This Contract
         </Button>
-        <div style={{marginTop:'5px'}}>
-            <Label color='teal' pointing='above'>You need to transfer {this.props.coverageAmount} Wei to Bid on this Contract!</Label>
+        <div style={{marginTop:'2px'}}>
+            <Label color='grey' pointing='above'>You need to transfer {this.props.coverageAmount} Wei to Bid on this Contract!</Label>
         </div>
-        <Divider/>
       </div>
     );
   }

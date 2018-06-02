@@ -54,7 +54,7 @@ class ViewContract extends Component{
       const details ={
           owner: contractDetails[0],
           coordinates: `Lattitide - ${contractDetails[1]} & Langitude - ${contractDetails[2]}`,
-          coverageAmtAndContractBalance: `${contractDetails[3]} & ${contractBalance}`,
+          coverageAmtAndContractBalance: `${contractDetails[3]}, ${contractBalance}`,
           listedPrice: contractDetails[4],
           description: contractDetails[5],
           bidders: contractDetails[6]
@@ -99,7 +99,7 @@ retreiveAndUpdateContractDetails = async (address) => {
     const contractBalance = await searchFarmObj.methods.contractBalance().call();
     const details ={owner: farmDetails[0],
                     coordinates: `Lattitide - ${farmDetails[1]} & Langitude - ${farmDetails[2]}`,
-                    coverageAmtAndContractBalance: `${farmDetails[3]} & ${contractBalance}`,
+                    coverageAmtAndContractBalance: `${farmDetails[3]}, ${contractBalance}`,
                     listedPrice: farmDetails[4],
                     description: farmDetails[5],
                     bidders: numberOfBidders
@@ -179,7 +179,7 @@ transferContract = async (address) => {
     const style = {color:'#d02552', fontWeight: 'bolder'};
     const colorProp = {color:'#EB593C'};
     return(
-        <div style={{backgroundColor:'#F6F6F6', width:'100%', height:'635px'}}>
+        <div style={{backgroundColor:'#FFE361', width:'100%', height:'660px'}}>
           <Layout>
             <Grid color='teal' divided='vertically'>
               <Grid.Row>
@@ -200,7 +200,7 @@ transferContract = async (address) => {
             </Grid>
 
             {!contractNotFoundMessage &&
-              <center style={{marginBottom:'15px',marginTop:'5px'}}>
+              <center style={{marginBottom:'5px',marginTop:'2px'}}>
                 <Label pointing='below' color="grey" size='medium'>
                   CONTRACT OWNER: Details OF {this.state.contractDetails.description} CONTRACT
                 </Label>
@@ -215,6 +215,7 @@ transferContract = async (address) => {
             </Grid>
               {!contractNotFoundMessage &&
                 <div>
+                  <Divider horizontal/>
                     <Grid>
                     <Grid.Row>
                       <Grid.Column container='true'>
@@ -225,9 +226,9 @@ transferContract = async (address) => {
                       }
 
                       {bidderChoosen &&
-                        <div style={{marginBottom:'2px', marginTop:'4px'}}>
-                          <Label color="grey" pointing='below' size='tiny' color="grey">Following Insurer has been choosen.</Label>
-                        </div>
+                        <center style={{marginBottom:'2px', marginTop:'4px'}}>
+                          <Label color="grey" pointing='below' size='medium' color="grey">Following Insurer has been choosen.</Label>
+                        </center>
                       }
 
                       {bidderInfoAvailable &&
@@ -261,8 +262,8 @@ transferContract = async (address) => {
                     <Grid.Column width={4}/>
                     <Grid.Column width={7} textAlign='right'>
                       {!bidderChoosen &&
-                        <center style={{marginBottom:'2px'}}><Label pointing='below' color="grey" size='medium'>
-                            Tranfer Contract</Label>
+                        <center style={{marginBottom:'1px'}}><Label pointing='below' color="grey" size='medium'>
+                            Transfer Contract</Label>
                         </center>
                       }
                         <Input

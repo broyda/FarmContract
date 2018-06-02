@@ -69,7 +69,7 @@ class ContractListInsurer extends Component{
           <Divider horizontal><span style={style}>AVAILABLE CONTRACTS FOR BIDDING</span></Divider>
           <div style={{marginTop:'50px'}}/>
           {this.state.items &&
-              <Table textAlign='center' size='medium' striped compact celled selectable>
+              <Table textAlign='center' striped compact celled selectable>
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>

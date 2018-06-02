@@ -18,7 +18,7 @@ class ViewContractInsurer extends Component{
       searchLoading: false,
       contractNotFoundMessage:this.props.contractNotFoundMessage,
       biddersInfo: this.props.biddersInfo,
-      bidderChoosen: false
+      bidderChoosen: this.props.bidderChoosen
     }
 }
   static async getInitialProps(props){
@@ -34,7 +34,7 @@ class ViewContractInsurer extends Component{
       if(bidderChoosen){
         const bidderAddress = await farmFactoryObj.methods.insurer().call();
         const amount = await farmFactoryObj.methods.listOfBidders(bidderAddress).call();
-          biddersInfo = new Array({
+        biddersInfo = new Array({
             bidderAddress: bidderAddress, amount: amount, bidderChoosen: true
           });
       }else{
@@ -54,12 +54,13 @@ class ViewContractInsurer extends Component{
     const details ={
           owner: contractDetails[0],
           coordinates: `Lattitide - ${contractDetails[1]} & Langitude - ${contractDetails[2]}`,
-          coverageAmtAndContractBalance: `${contractDetails[3]} & ${contractBalance}`,
+          coverageAmtAndContractBalance: `${contractDetails[3]}, ${contractBalance}`,
           listedPrice: contractDetails[4],
           description: contractDetails[5],
           bidders: contractDetails[6]
         };
-      return{details: details, address: address, coverageAmount: contractDetails[3], biddersInfo: biddersInfo};
+      return{details: details, address: address, coverageAmount: contractDetails[3],
+         biddersInfo: biddersInfo, bidderChoosen: bidderChoosen};
     }
   }
 
@@ -74,6 +75,7 @@ class ViewContractInsurer extends Component{
 retreiveAndUpdateContractDetails = async (address) => {
   try{
     const accounts = await web3.eth.getAccounts();
+    console.log(accounts[0]);
     const searchFarmObj = await farmFactory(address);
     const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
     const numberOfBidders = farmDetails[6];
@@ -102,7 +104,7 @@ retreiveAndUpdateContractDetails = async (address) => {
     const details ={
                     owner: farmDetails[0],
                     coordinates: `Lattitide - ${farmDetails[1]} & Langitude - ${farmDetails[2]}`,
-                    coverageAmtAndContractBalance: `${farmDetails[3]} & ${contractBalance}`,
+                    coverageAmtAndContractBalance: `${farmDetails[3]},${contractBalance}`,
                     listedPrice: farmDetails[4],
                     description: farmDetails[5],
                     bidders: numberOfBidders
@@ -181,14 +183,13 @@ renderBidderInformation(){
     const {bidderChoosen} = this.state;
     const bidInfoAvailable = bidInfo && bidInfo !== null && typeof bidInfo !== 'undefined' && bidInfo.length > 0;
     const colorProp = {color:'#EB593C'};
+    const colSize = bidderChoosen ? 10 : 7;
     return(
       <div style={{backgroundColor:'#b2cecf', width:'100%', height:'635px'}}>
         <Layout>
           <Grid color='teal'>
             <Grid.Row>
-              <Grid.Column  width={9}>
-                <Divider horizontal><span style={colorProp}>CONTRACT INSURER PAGE</span></Divider>
-              </Grid.Column>
+              <Grid.Column  width={9}/>
               <Grid.Column width={7} textAlign='right'>
                 <Input
                   value={this.state.searchAddress}
@@ -198,66 +199,82 @@ renderBidderInformation(){
                 <Button
                   content='Search'
                   icon="search"
-                  color='vk'
+                  color='youtube'
                   size='medium'
                   loading={this.state.loading}
                   onClick={this.searchContractDetails} floated='right'/>
               </Grid.Column>
             </Grid.Row>
+          </Grid>
+
             {!this.state.contractNotFoundMessage &&
-              <Grid.Row>
-                <Grid.Column>
-                    <Divider horizontal fitted>
-                      <span style={colorProp}>Details of {this.state.address}
-                      </span>
-                    </Divider>
-                </Grid.Column>
-              </Grid.Row>
+              <center style={{marginTop:'2px', marginBottom:'2px'}}>
+                <Label pointing='below' color='red'>
+                  INSURER/BIDDER PAGE: Details Of {this.state.contractDetails.description}
+                </Label>
+              </center>
             }
+
+          <Grid>
             <Grid.Row>
-              <Grid.Column width={9}>
+              <Grid.Column>
                 {this.renderContractDetails()}
               </Grid.Column>
+            </Grid.Row>
+            <Divider/>
+          </Grid>
 
-              {!this.state.contractNotFoundMessage &&
-                <Grid.Column width={7} floated='right' container='true'>
-                    {!bidderChoosen &&
-                      <BidOnContract bidOnContract={this.bidOnContract} coverageAmount={this.state.coverageAmount}/>
-                    }
-                    {bidderChoosen &&
-                      <div style={{marginTop:'25px'}}>
-                          <Label color="orange" pointing='below' size='small'>Following Insurer has been choosen by Contract Owner</Label>
+          {!this.state.contractNotFoundMessage &&
+            <div>
+            <Grid celled columns={2} divided relaxed >
+              <Grid.Row>
+                {!bidderChoosen &&
+                    <Grid.Column width={6} container='true'>
+                          <BidOnContract bidOnContract={this.bidOnContract} coverageAmount={this.state.coverageAmount}/>
+                    </Grid.Column>
+                  }
+              {bidInfoAvailable &&
+                <Grid.Column width={colSize} container='true'>
+                  {bidderChoosen &&
+                      <div>
+                        <Label color="red" pointing='below' size='small'>
+                          Following Insurer has been choosen by Contract Owner
+                        </Label>
                       </div>
                     }
-                    {!bidderChoosen && bidInfoAvailable &&
-                      <div style={{marginTop:'25px'}}>
-                          <Label color="orange" pointing='below' size='small'>Following Quotes are provided by different Insurer!!</Label>
+
+                  {!bidderChoosen &&
+                      <div>
+                        <Label color="red" pointing='below' size='small'>
+                          Following Quotes are provided by different Insurer!!
+                        </Label>
                       </div>
                     }
-                    {bidInfoAvailable &&
-                            <Table textAlign='center' size='small' striped compact celled selectable>
-                              <Table.Header>
-                                <Table.Row >
-                                  <Table.HeaderCell>
-                                    <span style={colorProp}>Address Of Insurer</span>
-                                  </Table.HeaderCell>
-                                  <Table.HeaderCell>
-                                    <span style={colorProp}>Quote/Premium</span>
-                                  </Table.HeaderCell>
-                                  <Table.HeaderCell>
-                                    <span style={colorProp}>Bid</span>
-                                  </Table.HeaderCell>
-                                </Table.Row>
-                              </Table.Header>
-                              <Table.Body>
-                                {this.renderBidderInformation()}
-                              </Table.Body>
-                            </Table>
-                     }
-                  </Grid.Column>
-                 }
+
+                    <Table textAlign='center' size='small' striped compact celled selectable>
+                          <Table.Header>
+                            <Table.Row >
+                              <Table.HeaderCell>
+                                <span style={colorProp}>Address Of Insurer</span>
+                              </Table.HeaderCell>
+                              <Table.HeaderCell>
+                                <span style={colorProp}>Quote/Premium</span>
+                              </Table.HeaderCell>
+                              <Table.HeaderCell>
+                                <span style={colorProp}>Bid</span>
+                              </Table.HeaderCell>
+                            </Table.Row>
+                          </Table.Header>
+                          <Table.Body>
+                            {this.renderBidderInformation()}
+                          </Table.Body>
+                        </Table>
+                </Grid.Column>
+              }
             </Grid.Row>
           </Grid>
+          </div>
+          }
         </Layout>
       </div>
     );

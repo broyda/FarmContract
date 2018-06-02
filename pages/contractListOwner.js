@@ -44,7 +44,7 @@ class ContractListOwner extends Component{
     const style = {color:'#d02552', fontWeight: 'bolder'};
     this.fetchContractAddressList();
     return(
-      <div style={{backgroundColor:'#F6F6F6', width:'100%', height:'635px'}}>
+      <div style={{backgroundColor:'#FFE361', width:'100%', height:'635px'}}>
         <Layout>
           <div style={{marginTop:'25px'}}/>
           <Divider horizontal><span style={style}>My CONTRACT's DETAILS</span></Divider>
