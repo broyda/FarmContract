@@ -308,6 +308,7 @@ contract FarmContract is usingOraclize{
 
     //To be invoked by insurers with bidding amount for the contract
     function bid(uint amount) biddingRules(amount) checkInsurer payable public {
+        require(msg.sender != owner);
         if(listOfBidders[msg.sender] == 0){
              require(msg.value >= coverageAmount);
              numberOfBidders++;
@@ -328,7 +329,7 @@ contract FarmContract is usingOraclize{
         insurer = _bidderAddress;
         insurer.transfer(listOfBidders[_bidderAddress]);
 
-       for(uint i = 0; i< numberOfBidders; i++){
+       for(uint i = 0; i<numberOfBidders; i++){
            address bidderAddress = biddersAddressArray[i];
            if(bidderAddress != _bidderAddress){
                delete listOfBidders[bidderAddress];
@@ -352,10 +353,17 @@ contract FarmContract is usingOraclize{
         contractSigned = true;
     }
 
-    function processClaim() payable public{
+    function processClaim_oraclize() payable public{
      require(claimProcessed == false);
      require(msg.sender == owner);
      oraclizeID = oraclize_query("WolframAlpha", "flip a coin");
+    }
+
+    function processClaim() payable public{
+     require(claimProcessed == false);
+     require(msg.sender == owner);
+     claimProcessed = true;
+     owner.transfer(coverageAmount);
     }
 
   function __callback(bytes32 _oraclizeID, string _result) public{

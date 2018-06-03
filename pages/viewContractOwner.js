@@ -20,7 +20,9 @@ class ViewContract extends Component{
       bidderChoosen: this.props.bidderChoosen,
       transferAddress:'',
       transferButtonLoading: false,
-      accountBalance:''
+      processClaimButtonLoading: false,
+      accountBalance:'',
+      claimProcessed: this.props.claimProcessed
     }
 }
   static async getInitialProps(props){
@@ -32,6 +34,7 @@ class ViewContract extends Component{
       const contractDetails = await farmFactoryObj.methods.getFarmContractDetails().call();
       const numberOfBidders = contractDetails[6];
       const bidderChoosen = await farmFactoryObj.methods.isBidderChoosen().call();
+      const claimProcessed = await farmFactoryObj.methods.claimProcessed().call();
       let biddersInfo;
       if(bidderChoosen){
         const bidderAddress = await farmFactoryObj.methods.insurer().call();
@@ -61,7 +64,7 @@ class ViewContract extends Component{
           bidders: contractDetails[6]
         };
       return{details: details, address: address, coverageAmount: contractDetails[3],
-         biddersInfo: biddersInfo, bidderChoosen: bidderChoosen};
+         biddersInfo: biddersInfo, bidderChoosen: bidderChoosen, claimProcessed: claimProcessed};
     }
   }
 
@@ -79,6 +82,7 @@ retreiveAndUpdateContractDetails = async (address) => {
     const farmDetails = await searchFarmObj.methods.getFarmContractDetails().call();
     const numberOfBidders = farmDetails[6];
     const bidderChoosen = await searchFarmObj.methods.isBidderChoosen().call();
+    const claimProcessed = await searchFarmObj.methods.claimProcessed().call();
     let biddersInfo;
     if(bidderChoosen){
       const bidderAddress = await searchFarmObj.methods.insurer().call();
@@ -114,8 +118,10 @@ retreiveAndUpdateContractDetails = async (address) => {
       contractDetails: details,
       biddersInfo: biddersInfo,
       contractNotFoundMessage:'',
-      bidderChoosen: bidderChoosen
+      bidderChoosen: bidderChoosen,
+      claimProcessed: claimProcessed
     });
+    this.getAccountBalance();
   }catch(error){
     console.log('inside catch block', error);
     this.setState({contractNotFoundMessage: 'No details found!. Please verify search criteria.', seachLoading: false});
@@ -144,7 +150,22 @@ transferContract = async (address) => {
             console.log('error occured inside chooseBidder', error);
           }
           this.setState({transferButtonLoading: false});
-        }
+    }
+
+processClaim = async () =>{
+  this.setState({processClaimButtonLoading: true});
+  try{
+    const farmObj = await farmFactory(this.state.address);
+    const accounts = await web3.eth.getAccounts();
+    await farmObj.methods.processClaim().send({from:accounts[0]});
+    const claimProcessed = await farmObj.methods.claimProcessed().call();
+    this.retreiveAndUpdateContractDetails(this.state.address);
+    this.setState({processClaimButtonLoading: false,claimProcessed: claimProcessed});
+  }catch(error){
+    console.log('An error occured!!!!', error);
+    this.setState({processClaimButtonLoading: false});
+  }
+}
 
   renderContractDetails(){
     if(!this.state.contractNotFoundMessage){
@@ -179,6 +200,7 @@ transferContract = async (address) => {
   }
 
   getAccountBalance = async () => {
+    console.log('inside getAccountBalance');
     const accounts = await web3.eth.getAccounts();
     const balance = await web3.eth.getBalance(accounts[0]);
     const amountInEther = await web3.utils.fromWei(balance, 'ether');
@@ -186,7 +208,7 @@ transferContract = async (address) => {
   }
 
   render(){
-    const {bidderChoosen, biddersInfo, contractNotFoundMessage} = this.state;
+    const {bidderChoosen, biddersInfo, contractNotFoundMessage, claimProcessed} = this.state;
     const bidderInfoAvailable = biddersInfo && biddersInfo !== null
         && typeof biddersInfo !== 'undefined' && biddersInfo.length > 0;
     const style = {color:'#d02552', fontWeight: 'bolder'};
@@ -247,7 +269,6 @@ transferContract = async (address) => {
                           <Label color="grey" pointing='below' size='medium' color="grey">Following Insurer has been choosen.</Label>
                         </center>
                       }
-
                       {bidderInfoAvailable &&
                         <div>
                           <Table textAlign='center' size='small' striped compact celled selectable>
@@ -299,18 +320,24 @@ transferContract = async (address) => {
                             onClick={() => this.transferContract(this.state.transferAddress)}
                            >Transfer Contract</Button>
                       </Grid.Column>
-                      {bidderChoosen &&
+
+                      {bidderChoosen && !claimProcessed &&
                         <Grid.Column width={6} textAlign='right'>
                           <Label pointing='right'>Click HERE to Process CLAIM</Label>
                             <Button
                               color = 'orange'
-                              loading={this.state.transferButtonLoading}
+                              loading={this.state.processClaimButtonLoading}
                               disabled={false}
-                              onClick={() => this.transferContract(this.state.transferAddress)}
+                              onClick={this.processClaim}
                              >Process Claim</Button>
                         </Grid.Column>
                       }
 
+                      {claimProcessed &&
+                        <Grid.Column width={6} textAlign='right'>
+                            <Label color="orange" size='large'>Claim Processed Successfully.</Label>
+                        </Grid.Column>
+                      }
                     </Grid.Row>
                     </Grid>
                 </div>
